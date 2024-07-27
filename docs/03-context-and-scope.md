@@ -4,7 +4,7 @@ This section covers the context and scope of the Paperboy solution.
 
 ## System context
 
-![Business context](images/business-context.png)
+![Business context](images/system-context.png)
 
 ## User groups
 
