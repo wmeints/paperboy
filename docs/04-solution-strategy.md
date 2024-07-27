@@ -64,3 +64,9 @@ the GPT-4 model in the application.
 We're using Semantic Kernel to interact with the LLM. Semantic Kernel is currently the only solution in C# that makes
 working with models like GPT-4 comfortable. It also features some very powerful methods to build complicated
 LLM pipelines that we may need in the near future.
+
+## Content storage
+
+We're processing information about papers using a workflow. We're using event sourcing to more easily track what
+operations happened on a paper. We're not building our own event sourcing solution. Instead we're 
+using [Marten](https://martendb.io) and Postgresql.
