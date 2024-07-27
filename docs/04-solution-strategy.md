@@ -2,13 +2,15 @@
 
 ## Local development
 
-We're using .NET Aspire to make it easier to develop the solution locally. We're using Aspire for:
+We're using .NET [Aspire](https://github.com/dotnet/aspire) to make it easier to develop the solution locally. 
+We're using Aspire for:
 
 - Orchestrating the various moving parts of the solution on a local workstation
 - The service defaults that make things more uniform across components
 - The dashboard to more easily debug interactions between various components
 
-Aspire also provides some basic deployment utilities. We're not using the deployment features, as we prefer to use Bicep.
+Aspire also provides some basic deployment utilities. We're not using the deployment features, as we prefer 
+to use Bicep.
 
 ## Deployment strategy
 
