@@ -23,7 +23,7 @@ public class GeneratePaperScoreFunction(Kernel kernel)
         var completionService = kernel.Services.GetRequiredService<IChatCompletionService>();
         var messages = new ChatHistory();
         
-        messages.AddSystemMessage(ReadSystemPrompt().Replace("{paper_title}", paperTitle).Replace("{paper_summary}", paperSummary));
+        messages.AddSystemMessage(ReadSystemPrompt());
         messages.AddUserMessage(paperSummary);
 
         var executionOptions = new OpenAIPromptExecutionSettings()
@@ -39,7 +39,7 @@ public class GeneratePaperScoreFunction(Kernel kernel)
     private string ReadSystemPrompt()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "PaperBoy.ContentProcessor.Skills.Summarization.SummarizePage.instructions.txt";
+        var resourceName = "PaperBoy.ContentProcessor.Skills.Scoring.ScorePaper.instructions.txt";
 
         using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
         using StreamReader reader = new StreamReader(stream);

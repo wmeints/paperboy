@@ -1,13 +1,5 @@
-﻿# Instructions
-
-You're a world-class researcher at a renowned university.
-Your task is to review the summary of the provided paper to determine its relevance for the target audience.
-
-## Output format
-
-Output a JSON object with two keys: `score` and `explanation`.
-The `score` should be a number between 1 and 5, where 1 means the paper is not relevant at all, and 5 means the paper is highly relevant.
-The `explanation` should be a string that explains why you gave the paper that score.
+﻿You're a world-class researcher at a renowned university.
+Your task is to review the summary of the provided paper to determine its relevance for the target audience. Give it a score between 1 and 5. Explain why you gave the paper the score. Output the results in a JSON object.
 
 ## The target audience
 
@@ -28,9 +20,3 @@ They also want papers that are more pratical in nature.
 Data scientists are looking for a more fundamental approach to papers.
 They want to learn about new techniques that can be relevant for their work.
 Data scientists love papers that describe experiments with results.
-
-## Paper
-
-**{paper_title}**
-
-{paper_summary}

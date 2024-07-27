@@ -20,4 +20,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PaperBoy.ContentProcessor\PaperBoy.ContentProcessor.csproj" />
+  </ItemGroup>
+
 </Project>
