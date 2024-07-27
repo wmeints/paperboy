@@ -1,5 +1,66 @@
 # Solution strategy
 
+This section covers the overall solution strategy for Paperboy.
+
+## Content processing
+
+We're using a content processing pipeline to:
+
+- Assess paper quality and interestingness to the target audience
+- Extract knowledge from papers into a knowledge graph
+- Implement an approval process for submitted papers
+- Write descriptions for interesting papers for the weekly Global AI community newsletter and internal channels
+
+### Content processing workflow
+
+The content processing pipeline is implemented using Dapr workflow. We track progress for papers on the papers themselves.
+This makes it easier to see on a per-paper basis how far along we are with processing. In addition to this, we provide
+detailed information about the workflow, so we can quickly debug problems with processing.
+
+### Worker pattern
+
+The workflow itself doesn't contain any interaction with language models or external services. We implement processing
+logic in a separate content processing worker service. This makes it easier for us to scale out if we have need for it.
+It also makes the workflow less vulnerable to crashes.
+
+### Content storage
+
+The content processed in the content pipeline is stored separately so we have detailed information and status information
+at hand without looking at the workflow instances that were used to process papers. 
+
+We're using event sourcing to more easily track what operations happened on a paper. We're not building our own event
+sourcing solution. Instead we're using [Marten](https://martendb.io) and Postgresql.
+
+## Language model integration
+
+### Hosting language models
+
+We use NLP to automatically assess the quality and interestingness of papers. This saves a lot of time during the week.
+We've tested with GPT-4, and that seems to provide the best quality results so far. We're using Azure OpenAI to host
+the GPT-4 model in the application.
+
+### Framework for interacting with the LLM
+
+We're using Semantic Kernel to interact with the LLM. Semantic Kernel is currently the only solution in C# that makes
+working with models like GPT-4 comfortable. It also features some very powerful methods to build complicated
+LLM pipelines that we may need in the near future.
+
+### Verifying LLM interactions
+
+We collect information about LLM interactions to verify quality of these interactions. We don't collect personal
+information in those interactions. We collect the following information:
+
+- System prompt
+- User prompt
+- Generated output
+
+We're using [RAGAS](https://github.com/explodinggradients/ragas) to measure the quality of the LLM interactions.
+
+### Monitoring LLM interactions in production
+
+To track LLM interactions in production, we're using open-telemetry with additional metadata. We may need to switch
+to a more specific solution in the future.
+
 ## Local development
 
 We're using .NET [Aspire](https://github.com/dotnet/aspire) to make it easier to develop the solution locally. 
@@ -51,22 +112,3 @@ We specifically need the workflow capabilities for processing papers, as this is
 
 The Dapr workflow capabilities also make it easier for us to implement a content process with approvals.
 
-## Language model integration
-
-### Hosting language models
-
-We use NLP to automatically assess the quality and interestingness of papers. This saves a lot of time during the week.
-We've tested with GPT-4, and that seems to provide the best quality results so far. We're using Azure OpenAI to host
-the GPT-4 model in the application.
-
-### Framework for interacting with the LLM
-
-We're using Semantic Kernel to interact with the LLM. Semantic Kernel is currently the only solution in C# that makes
-working with models like GPT-4 comfortable. It also features some very powerful methods to build complicated
-LLM pipelines that we may need in the near future.
-
-## Content storage
-
-We're processing information about papers using a workflow. We're using event sourcing to more easily track what
-operations happened on a paper. We're not building our own event sourcing solution. Instead we're 
-using [Marten](https://martendb.io) and Postgresql.
