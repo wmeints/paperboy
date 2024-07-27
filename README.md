@@ -10,7 +10,8 @@ This application is changing that. I use this web application for a number of go
 - :rocket: Track papers that I've seen with associated metadata in a knowledge graph.
 - :rocket: Provide a nice interface for people to search through papers I've published about in the weekly newsletter.
 
-To be honest, this application is also to show off just what you can do with tools like Semantic Kernel, and Aspire. So
+To be honest, this application is also to show off just what you can do with tools like 
+[Semantic Kernel](https://github.com/microsoft/semantic-kernel), and [Aspire](https://github.com/dotnet/aspire). So
 it's a _little_ over-engineered.
 
 ## :computer: System requirements
