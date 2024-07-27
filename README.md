@@ -13,7 +13,7 @@ This application is changing that. I use this web application for a number of go
 To be honest, this application is also to show off just what you can do with tools like Semantic Kernel, and Aspire. So
 it's a _little_ over-engineered.
 
-## :check: System requirements
+## :computer: System requirements
 
 - [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/)
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
