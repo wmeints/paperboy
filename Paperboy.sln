@@ -1,0 +1,89 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{51412288-0359-4000-B4B2-13FE2813E736}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "contentstore", "contentstore", "{DB926205-174B-4C4A-A628-8C4D5ED8CC5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperBoy.ContentStore", "apps\contentstore\PaperBoy.ContentStore\PaperBoy.ContentStore.csproj", "{CF1B8374-8266-417B-A35F-FBB35A78AA74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{C883AE1F-A979-4D00-AADD-9B0153E258E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paperboy.ServiceDefaults", "shared\Paperboy.ServiceDefaults\Paperboy.ServiceDefaults.csproj", "{CB902F8F-0838-4A78-A09E-99DD9AB62186}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperBoy.ContentStore.Tests", "apps\contentstore\PaperBoy.ContentStore.Tests\PaperBoy.ContentStore.Tests.csproj", "{E73D04AD-E257-4F5D-A7AB-8163491AC656}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orchestrator", "orchestrator", "{99088525-3DB2-48E5-859B-509BE43429D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperBoy.Orchestrator", "apps\orchestrator\PaperBoy.Orchestrator\PaperBoy.Orchestrator.csproj", "{5F0F6D78-D162-4266-9459-D43366880666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperBoy.Orchestrator.Tests", "apps\orchestrator\PaperBoy.Orchestrator.Tests\PaperBoy.Orchestrator.Tests.csproj", "{A74264A8-318B-4051-BC10-6FA1566FE47D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosting", "hosting", "{956C55F8-1BB2-4830-9135-E74B5C9237F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paperboy.AppHost", "hosting\Paperboy.AppHost\Paperboy.AppHost.csproj", "{FF3806DE-6821-46D0-87F5-8C71D1204A59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "contentprocessor", "contentprocessor", "{81292553-C47C-4046-9A95-C84228A0F157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperBoy.ContentProcessor", "apps\contentprocessor\PaperBoy.ContentProcessor\PaperBoy.ContentProcessor.csproj", "{51DD39BE-F255-495E-ACFC-717CFC924F93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperBoy.ContentProcessor.Tests", "apps\contentprocessor\PaperBoy.ContentProcessor.Tests\PaperBoy.ContentProcessor.Tests.csproj", "{87506B27-0AA2-4338-AE6E-44E2F62F28D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF1B8374-8266-417B-A35F-FBB35A78AA74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF1B8374-8266-417B-A35F-FBB35A78AA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF1B8374-8266-417B-A35F-FBB35A78AA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF1B8374-8266-417B-A35F-FBB35A78AA74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB902F8F-0838-4A78-A09E-99DD9AB62186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB902F8F-0838-4A78-A09E-99DD9AB62186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB902F8F-0838-4A78-A09E-99DD9AB62186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB902F8F-0838-4A78-A09E-99DD9AB62186}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E73D04AD-E257-4F5D-A7AB-8163491AC656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E73D04AD-E257-4F5D-A7AB-8163491AC656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E73D04AD-E257-4F5D-A7AB-8163491AC656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E73D04AD-E257-4F5D-A7AB-8163491AC656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F0F6D78-D162-4266-9459-D43366880666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F0F6D78-D162-4266-9459-D43366880666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F0F6D78-D162-4266-9459-D43366880666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F0F6D78-D162-4266-9459-D43366880666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A74264A8-318B-4051-BC10-6FA1566FE47D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74264A8-318B-4051-BC10-6FA1566FE47D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74264A8-318B-4051-BC10-6FA1566FE47D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A74264A8-318B-4051-BC10-6FA1566FE47D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF3806DE-6821-46D0-87F5-8C71D1204A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF3806DE-6821-46D0-87F5-8C71D1204A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF3806DE-6821-46D0-87F5-8C71D1204A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF3806DE-6821-46D0-87F5-8C71D1204A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51DD39BE-F255-495E-ACFC-717CFC924F93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51DD39BE-F255-495E-ACFC-717CFC924F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51DD39BE-F255-495E-ACFC-717CFC924F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51DD39BE-F255-495E-ACFC-717CFC924F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87506B27-0AA2-4338-AE6E-44E2F62F28D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87506B27-0AA2-4338-AE6E-44E2F62F28D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87506B27-0AA2-4338-AE6E-44E2F62F28D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87506B27-0AA2-4338-AE6E-44E2F62F28D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DB926205-174B-4C4A-A628-8C4D5ED8CC5F} = {51412288-0359-4000-B4B2-13FE2813E736}
+		{CF1B8374-8266-417B-A35F-FBB35A78AA74} = {DB926205-174B-4C4A-A628-8C4D5ED8CC5F}
+		{CB902F8F-0838-4A78-A09E-99DD9AB62186} = {C883AE1F-A979-4D00-AADD-9B0153E258E1}
+		{E73D04AD-E257-4F5D-A7AB-8163491AC656} = {DB926205-174B-4C4A-A628-8C4D5ED8CC5F}
+		{99088525-3DB2-48E5-859B-509BE43429D1} = {51412288-0359-4000-B4B2-13FE2813E736}
+		{5F0F6D78-D162-4266-9459-D43366880666} = {99088525-3DB2-48E5-859B-509BE43429D1}
+		{A74264A8-318B-4051-BC10-6FA1566FE47D} = {99088525-3DB2-48E5-859B-509BE43429D1}
+		{FF3806DE-6821-46D0-87F5-8C71D1204A59} = {956C55F8-1BB2-4830-9135-E74B5C9237F3}
+		{81292553-C47C-4046-9A95-C84228A0F157} = {51412288-0359-4000-B4B2-13FE2813E736}
+		{51DD39BE-F255-495E-ACFC-717CFC924F93} = {81292553-C47C-4046-9A95-C84228A0F157}
+		{87506B27-0AA2-4338-AE6E-44E2F62F28D9} = {81292553-C47C-4046-9A95-C84228A0F157}
+	EndGlobalSection
+EndGlobal

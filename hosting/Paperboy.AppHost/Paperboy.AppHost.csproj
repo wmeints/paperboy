@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>0b4a8c2c-a981-4288-b4e3-3d253d831f26</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.Dapr" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.1.0" />
+    <PackageReference Include="Aspire.Hosting.Python" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\apps\contentprocessor\PaperBoy.ContentProcessor\PaperBoy.ContentProcessor.csproj" />
+    <ProjectReference Include="..\..\apps\contentstore\PaperBoy.ContentStore\PaperBoy.ContentStore.csproj" />
+    <ProjectReference Include="..\..\apps\orchestrator\PaperBoy.Orchestrator\PaperBoy.Orchestrator.csproj" />
+  </ItemGroup>
+
+</Project>
