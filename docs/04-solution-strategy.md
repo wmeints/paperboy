@@ -53,6 +53,14 @@ The Dapr workflow capabilities also make it easier for us to implement a content
 
 ## Language model integration
 
+### Hosting language models
+
 We use NLP to automatically assess the quality and interestingness of papers. This saves a lot of time during the week.
 We've tested with GPT-4, and that seems to provide the best quality results so far. We're using Azure OpenAI to host
 the GPT-4 model in the application.
+
+### Framework for interacting with the LLM
+
+We're using Semantic Kernel to interact with the LLM. Semantic Kernel is currently the only solution in C# that makes
+working with models like GPT-4 comfortable. It also features some very powerful methods to build complicated
+LLM pipelines that we may need in the near future.
