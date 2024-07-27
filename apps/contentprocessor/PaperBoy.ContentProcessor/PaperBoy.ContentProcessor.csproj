@@ -4,6 +4,22 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>SKEXP0010</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.16.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\Paperboy.ServiceDefaults\Paperboy.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Skills\Scoring\ScorePaper\instructions.txt" />
+    <EmbeddedResource Include="Skills\Summarization\SummarizePaper\instructions.txt" />
+    <None Remove="Skills\Summarization\SummarizePage\instructions.txt" />
+    <EmbeddedResource Include="Skills\Summarization\SummarizePage\instructions.txt" />
+  </ItemGroup>
 
 </Project>
