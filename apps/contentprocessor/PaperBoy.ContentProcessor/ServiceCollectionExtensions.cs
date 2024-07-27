@@ -10,9 +10,9 @@ public static class ServiceCollectionExtensions
         var languageModelConnectionString = new LanguageModelConnectionString(connectionString!);
 
         builder.Services.AddKernel()
-            .AddOpenAIChatCompletion(
-                modelId: "gpt-40",
-                endpoint: new Uri(languageModelConnectionString["Endpoint"]),
+            .AddAzureOpenAIChatCompletion(
+                deploymentName: "gpt-40",
+                endpoint: languageModelConnectionString["Endpoint"],
                 apiKey: languageModelConnectionString["Key"]
             );
     }

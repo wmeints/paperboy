@@ -64,6 +64,19 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
 
     private static async Task SummarizePaperAsync(WorkflowContext context, ImportPaperActivityOutput importResult)
     {
+        var paperDetails = await context.CallActivityAsync<GetPaperDetailsActivityOutput>(nameof(GetPaperDetailsActivity),
+            new GetPaperDetailsActivityInput(importResult.PaperId));
+
+        foreach (var page in paperDetails.Pages)
+        {
+            var summaryResult = await context.CallActivityAsync<SummarizePageActivityOutput>(
+                nameof(SummarizePageActivity),
+                new SummarizePageActivityInput(page.PageNumber, paperDetails.Title, page.Content));
+
+            await context.CallActivityAsync(nameof(SubmitPageSummaryActivity),
+                new SubmitPageSummaryActivityInput(importResult.PaperId, page.PageNumber, summaryResult.Summary));
+        }
+        
         var summarizePaperResult = await context.CallActivityAsync<SummarizePaperActivityOutput>(
             nameof(SummarizePaperActivity),
             new SummarizePaperActivityInput(importResult.PaperId));

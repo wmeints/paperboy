@@ -24,6 +24,7 @@ builder.Services.AddScoped<IContentExtractor, PdfContentExtractor>();
 builder.Services.AddScoped<ImportPaperCommandHandler>();
 builder.Services.AddScoped<SubmitSummaryCommandHandler>();
 builder.Services.AddScoped<SubmitScoreCommandHandler>();
+builder.Services.AddScoped<SubmitPageSummaryCommandHandler>();
 
 var app = builder.Build();
 
@@ -39,9 +40,19 @@ app.MapPost("/import", async (ImportPaperRequest form, ImportPaperCommandHandler
 
 app.MapPut("/papers/{paperId}/summary", async (Guid paperId, SubmitPaperSummaryRequest request, SubmitSummaryCommandHandler commandHandler) =>
 {
-    var updateSummaryCommand = new SubmitSummaryCommand(paperId, request.Summary, request.PageSummaries);
+    var updateSummaryCommand = new SubmitSummaryCommand(paperId, request.Summary);
 
     await commandHandler.ExecuteAsync(updateSummaryCommand);
+
+    return Results.Accepted();
+});
+
+app.MapPut("/papers/{paperId}/pages/{pageNumber}/summary", async (Guid paperId, int pageNumber,
+    SubmitPageSummaryRequest request, SubmitPageSummaryCommandHandler commandHandler) =>
+{
+    var submitPageSummaryCommand = new SubmitPageSummaryCommand(paperId, pageNumber, request.Summary);
+
+    await commandHandler.ExecuteAsync(submitPageSummaryCommand);
 
     return Results.Accepted();
 });
@@ -54,6 +65,7 @@ app.MapPut("/papers/{paperId}/score", async(Guid paperId, SubmitPaperScoreReques
 
     return Results.Accepted();
 });
+
 
 app.MapGet("/papers/{paperId}/status", async (Guid paperId, IPaperRepository paperRepository) =>
 {
@@ -82,6 +94,8 @@ app.MapGet("/papers/{paperId}", async (Guid paperId, IPaperRepository paperRepos
     
     return Results.Ok(new GetPaperResponse(paper.Id, paper.Title, paper.Summary, pages));
 });
+
+
 
 app.MapDefaultEndpoints();
 

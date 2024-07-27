@@ -11,7 +11,7 @@ namespace PaperBoy.ContentProcessor.CommandHandlers;
 /// </summary>
 /// <param name="summarizePageFunction">The function to summarize a page using a semantic kernel.</param>
 /// <param name="summarizePaperFunction">The function to summarize a paper using a semantic kernel.</param>
-public class SummarizePaperCommandHandler(SummarizePageFunction summarizePageFunction, SummarizePaperFunction summarizePaperFunction)
+public class SummarizePaperCommandHandler(SummarizePageFunction summarizePageFunction, SummarizePaperFunction summarizePaperFunction, ILogger<SummarizePaperCommandHandler> logger)
 {
     /// <summary>
     /// Asynchronously executes the command to summarize a paper.
@@ -20,16 +20,8 @@ public class SummarizePaperCommandHandler(SummarizePageFunction summarizePageFun
     /// <returns>A task that represents the asynchronous operation. The task result contains the response with the paper summary and page summaries.</returns>
     public async Task<SummarizePaperResponse> ExecuteAsync(SummarizePaperRequest request)
     {
-        var pageSummaries = new List<PageSummary>();
+        var paperSummary = await summarizePaperFunction.ExecuteAsync(request.Title, request.PageSummaries);
 
-        foreach (var page in request.Pages)
-        {
-            var pageSummary = await summarizePageFunction.ExecuteAsync(request.Title, page.Content);
-            pageSummaries.Add(new PageSummary(page.PageNumber, pageSummary));
-        }
-        
-        var paperSummary = await summarizePaperFunction.ExecuteAsync(request.Title, pageSummaries);
-
-        return new SummarizePaperResponse(paperSummary, pageSummaries);
+        return new SummarizePaperResponse(paperSummary);
     }
 }

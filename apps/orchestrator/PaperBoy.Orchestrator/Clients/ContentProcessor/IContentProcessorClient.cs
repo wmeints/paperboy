@@ -15,4 +15,11 @@ public interface IContentProcessorClient
     /// <param name="request">Request data needed to generate the summaries.</param>
     /// <returns>Returns the summarized content.</returns>
     Task<SummarizePaperResponse> SummarizePaperAsync(SummarizePaperRequest request);
+    
+    /// <summary>
+    /// Summarizes an individual page of a paper.
+    /// </summary>
+    /// <param name="request">Request data needed to generate the summaries.</param>
+    /// <returns>Returns the summarized content.</returns>
+    Task<SummarizePageResponse> SummarizePageAsync(SummarizePageRequest request);
 }

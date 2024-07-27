@@ -29,4 +29,15 @@ public class ContentProcessorClient(DaprClient daprClient): IContentProcessorCli
         return await daprClient.InvokeMethodAsync<SummarizePaperRequest, SummarizePaperResponse>(
             HttpMethod.Post, "contentprocessor", "Summarize", request);
     }
+
+    /// <summary>
+    /// Summarizes an individual page of a paper.
+    /// </summary>
+    /// <param name="request">Request data needed to generate the summaries.</param>
+    /// <returns>Returns the summarized content.</returns>
+    public async Task<SummarizePageResponse> SummarizePageAsync(SummarizePageRequest request)
+    {
+        return await daprClient.InvokeMethodAsync<SummarizePageRequest, SummarizePageResponse>(
+            HttpMethod.Post, "contentprocessor", "SummarizePage", request);
+    }
 }

@@ -2,4 +2,4 @@
 
 namespace PaperBoy.ContentProcessor.Responses;
 
-public record SummarizePaperResponse(string Summary, List<PageSummary> PageSummaries);
+public record SummarizePaperResponse(string Summary);

@@ -37,8 +37,7 @@ public class PaperTests
         // Arrange
         var paper = await TestObjectFactory.CreatePaperAsync();
         
-        var command = new SubmitSummaryCommand(paper.Id, "Summary",
-            new List<PageSummary> { new PageSummary(1, "Page Summary") });
+        var command = new SubmitSummaryCommand(paper.Id, "Summary");
 
         // Act
         paper.SubmitSummary(command);
@@ -46,7 +45,6 @@ public class PaperTests
         // Assert
         Assert.Equal(PaperStatus.Summarized, paper.Status);
         Assert.Equal(command.Summary, paper.Summary);
-        Assert.Equal(command.PageSummaries.First().Summary, paper.Pages.First().Summary);
     }
 
     [Fact]
@@ -63,5 +61,20 @@ public class PaperTests
         Assert.Equal(PaperStatus.Scored, paper.Status);
         Assert.Equal(command.Score, paper.Score.Value);
         Assert.Equal(command.Explanation, paper.Score.Explanation);
+    }
+    
+    [Fact]
+    public async Task PageSummaryIsSubmittedCorrectly()
+    {
+        // Arrange
+        var paper = await TestObjectFactory.CreatePaperAsync();
+        var command = new SubmitPageSummaryCommand(paper.Id, 1, "Summary");
+
+        // Act
+        paper.SubmitPageSummary(command);
+
+        // Assert
+        var page = paper.Pages.Single();
+        Assert.Equal(command.Summary, page.Summary);
     }
 }

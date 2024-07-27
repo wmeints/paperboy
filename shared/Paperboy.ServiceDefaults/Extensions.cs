@@ -2,10 +2,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Polly;
+using Polly.Retry;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -21,11 +24,32 @@ public static class Extensions
         builder.AddDefaultHealthChecks();
 
         builder.Services.AddServiceDiscovery();
-
+        
         builder.Services.ConfigureHttpClientDefaults(http =>
         {
+            // Set the request time out to 3 minutes to ensure that we get a useful response from OpenAI.
+            http.ConfigureHttpClient(options =>
+            {
+                options.Timeout = TimeSpan.FromMinutes(3);
+            });
+            
             // Turn on resilience by default
-            http.AddStandardResilienceHandler();
+            http.AddStandardResilienceHandler().Configure(options =>
+            {
+                options.TotalRequestTimeout = new HttpTimeoutStrategyOptions
+                {
+                    Timeout = TimeSpan.FromMinutes(10)
+                };
+            
+                options.AttemptTimeout = new HttpTimeoutStrategyOptions()
+                {
+                    Timeout = TimeSpan.FromMinutes(5)
+                };
+            
+                options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(20);
+                
+                options.Retry.Delay = TimeSpan.FromSeconds(2);
+            });
 
             // Turn on service discovery by default
             http.AddServiceDiscovery();

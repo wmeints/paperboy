@@ -1,4 +1,5 @@
-﻿using PaperBoy.ContentStore.Domain.Commands;
+﻿using Microsoft.CodeAnalysis.Emit;
+using PaperBoy.ContentStore.Domain.Commands;
 using PaperBoy.ContentStore.Domain.Events;
 using PaperBoy.ContentStore.Domain.Shared;
 
@@ -98,7 +99,7 @@ public class Paper : AggregateRoot
     /// <param name="cmd">Command data used to update the paper with a generated summary.</param>
     public void SubmitSummary(SubmitSummaryCommand cmd)
     {
-        EmitDomainEvent(new SummaryGeneratedEvent(cmd.PaperId, cmd.Summary, cmd.PageSummaries));
+        EmitDomainEvent(new SummaryGeneratedEvent(cmd.PaperId, cmd.Summary));
     }
 
     /// <summary>
@@ -108,6 +109,15 @@ public class Paper : AggregateRoot
     public void SubmitScore(SubmitScoreCommand cmd)
     {
         EmitDomainEvent(new ScoreGeneratedEvent(cmd.PaperId, cmd.Score, cmd.Explanation));
+    }
+    
+    /// <summary>
+    /// Submits a generated summary for a page in the paper.
+    /// </summary>
+    /// <param name="command">Command data used to update the summary data</param>
+    public void SubmitPageSummary(SubmitPageSummaryCommand command)
+    {
+        EmitDomainEvent(new PageSummaryGeneratedEvent(command.PaperId,command.PageNumber,command.Summary));   
     }
 
     protected override bool TryApplyDomainEvent(object domainEvent)
@@ -123,9 +133,23 @@ public class Paper : AggregateRoot
             case ScoreGeneratedEvent scoreUpdatedEvent:
                 Apply(scoreUpdatedEvent);
                 break;
+            case PageSummaryGeneratedEvent pageSummaryGeneratedEvent:
+                Apply(pageSummaryGeneratedEvent);
+                break;
         }
 
         return true;
+    }
+
+    private void Apply(PageSummaryGeneratedEvent pageSummaryGeneratedEvent)
+    {
+        var page = _pages.First(x => x.PageNumber == pageSummaryGeneratedEvent.PageNumber);
+        var updatedPage = page with { Summary = pageSummaryGeneratedEvent.Summary };
+
+        _pages.Remove(page);
+        _pages.Add(updatedPage);
+        
+        Version++;
     }
 
     private void Apply(ScoreGeneratedEvent scoreGeneratedEvent)
@@ -141,16 +165,6 @@ public class Paper : AggregateRoot
         Status = PaperStatus.Summarized;
         Summary = summaryGeneratedEvent.Summary;
 
-        var summarizedPages = new List<Page>();
-
-        foreach (var pageSummary in summaryGeneratedEvent.PageSummaries)
-        {
-            var page = _pages.First(x => x.PageNumber == pageSummary.PageNumber);
-            summarizedPages.Add(page with { Summary = pageSummary.Summary });
-        }
-
-        _pages = summarizedPages;
-
         Version++;
     }
 
@@ -164,4 +178,6 @@ public class Paper : AggregateRoot
         
         Version++;
     }
+
+    
 }
