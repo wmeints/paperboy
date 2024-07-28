@@ -1,0 +1,9 @@
+POST https://localhost:7033/papers
+Content-Type: application/json
+
+{
+    "title": "Long-form factuality in large language models",
+    "url":"https://arxiv.org/pdf/2403.18802",
+    "emailAddress": "test@domain.org",
+    "name": "John Doe"
+}
