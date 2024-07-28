@@ -25,6 +25,7 @@ storeOptions.Projections.Add(new PaperInfoProjection(), Marten.Events.Projection
 builder.Services.AddMarten(storeOptions).UseNpgsqlDataSource();
 
 builder.Services.AddScoped<IPaperRepository, PaperRepository>();
+builder.Services.AddScoped<IPaperInfoRepository, PaperInfoRepository>();
 builder.Services.AddScoped<IContentExtractor, PdfContentExtractor>();
 builder.Services.AddScoped<ImportPaperCommandHandler>();
 builder.Services.AddScoped<SubmitSummaryCommandHandler>();
