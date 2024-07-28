@@ -1,6 +1,7 @@
 using Marten;
-using Npgsql;
+using Microsoft.AspNetCore.Mvc;
 using PaperBoy.ContentStore.Application.CommandHandlers;
+using PaperBoy.ContentStore.Application.Projections;
 using PaperBoy.ContentStore.Domain;
 using PaperBoy.ContentStore.Domain.Commands;
 using PaperBoy.ContentStore.Infrastructure;
@@ -12,12 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddNpgsqlDataSource(builder.Configuration.GetConnectionString("contentStoreDb"));
+builder.Services.AddNpgsqlDataSource(builder.Configuration.GetConnectionString("contentstoredb")!);
 
-builder.Services.AddMarten(options =>
+var storeOptions = new StoreOptions
 {
-    options.AutoCreateSchemaObjects = AutoCreate.CreateOrUpdate;
-}).UseNpgsqlDataSource();
+    AutoCreateSchemaObjects = AutoCreate.CreateOrUpdate,
+};
+
+storeOptions.Projections.Add(new PaperInfoProjection(), Marten.Events.Projections.ProjectionLifecycle.Inline);
+
+builder.Services.AddMarten(storeOptions).UseNpgsqlDataSource();
 
 builder.Services.AddScoped<IPaperRepository, PaperRepository>();
 builder.Services.AddScoped<IContentExtractor, PdfContentExtractor>();
@@ -57,7 +62,7 @@ app.MapPut("/papers/{paperId}/pages/{pageNumber}/summary", async (Guid paperId, 
     return Results.Accepted();
 });
 
-app.MapPut("/papers/{paperId}/score", async(Guid paperId, SubmitPaperScoreRequest request, SubmitScoreCommandHandler commandHandler) =>
+app.MapPut("/papers/{paperId}/score", async (Guid paperId, SubmitPaperScoreRequest request, SubmitScoreCommandHandler commandHandler) =>
 {
     var submitScoreCommand = new SubmitScoreCommand(paperId, request.Score, request.Explanation);
 
@@ -75,7 +80,7 @@ app.MapGet("/papers/{paperId}/status", async (Guid paperId, IPaperRepository pap
     {
         return Results.NotFound();
     }
-    
+
     return Results.Ok(paper.Status.ToString());
 });
 
@@ -88,14 +93,14 @@ app.MapGet("/papers/{paperId}", async (Guid paperId, IPaperRepository paperRepos
         return Results.NotFound();
     }
 
-    var pages = paper.Pages
-        .Select(x => new PageData(x.PageNumber,x.Content, x.Summary))
-        .ToList();
-    
-    return Results.Ok(new GetPaperResponse(paper.Id, paper.Title, paper.Summary, pages));
+    return Results.Ok(paper);
 });
 
-
+app.MapGet("/papers", async (IPaperInfoRepository paperInfoRepository, [FromQuery] int page = 0) =>
+{
+    var papers = await paperInfoRepository.GetAllAsync(page, 20);
+    return Results.Ok(papers);
+});
 
 app.MapDefaultEndpoints();
 

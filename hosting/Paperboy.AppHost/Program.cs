@@ -4,7 +4,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var languageModel = builder.AddConnectionString("languagemodel");
 
-var sqlserver = builder.AddPostgres("postgres").WithDataVolume().WithInitBindMount("../../sql/");
+var sqlserver = builder.AddPostgres("postgres").WithDataVolume().WithInitBindMount("../../sql/initdb/");
 var contentstoreDb = sqlserver.AddDatabase("contentstoredb");
 
 var contentstore = builder.AddProject<PaperBoy_ContentStore>("contentstore")
