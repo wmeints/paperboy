@@ -92,7 +92,8 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
     {
         var importResult = await context.CallActivityAsync<ImportPaperActivityOutput>(
             nameof(ImportPaperActivity),
-            new ImportPaperActivityInput(input.Url, input.Submitter));
+            new ImportPaperActivityInput(input.Title, input.Url, input.Submitter));
+            
         return importResult;
     }
 }

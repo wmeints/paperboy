@@ -14,7 +14,7 @@ public class ImportPaperActivity(IContentStoreClient contentStoreClient): Workfl
 {
     public override async Task<ImportPaperActivityOutput> RunAsync(WorkflowActivityContext context, ImportPaperActivityInput input)
     {
-        var result = await contentStoreClient.ImportPaperAsync(new ImportPaperRequest(input.Url));
+        var result = await contentStoreClient.ImportPaperAsync(new ImportPaperRequest(input.Title, input.Url, input.Submitter));
         return new ImportPaperActivityOutput(result.PaperId);
     }
 }

@@ -1,3 +1,5 @@
-﻿namespace PaperBoy.Orchestrator.Clients.ContentStore;
+﻿using PaperBoy.Orchestrator.Models;
 
-public record ImportPaperRequest(string Url);
+namespace PaperBoy.Orchestrator.Clients.ContentStore;
+
+public record ImportPaperRequest(string Title, string Url, SubmitterInformation Submitter);

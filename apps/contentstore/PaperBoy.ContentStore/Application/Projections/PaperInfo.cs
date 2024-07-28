@@ -18,6 +18,11 @@ public class PaperInfo
     public string Title { get; set; } = default!;
 
     /// <summary>
+    /// Gets or sets the information about the person who submitted the paper.
+    /// </summary>
+    public SubmitterInformation Submitter { get; set; } = default!;
+
+    /// <summary>
     /// Gets or sets the number of sections that have been summarized.
     /// </summary>
     public int SectionsSummarized { get; set; }

@@ -50,6 +50,7 @@ public class PaperInfoProjection : EventProjection
             Title = @event.Title,
             TotalSections = @event.Pages.Count,
             Status = Domain.PaperStatus.Imported,
+            Submitter = @event.Submitter,
             DateCreated = DateTime.UtcNow,
         };
 
