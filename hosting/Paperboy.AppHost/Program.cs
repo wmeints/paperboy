@@ -21,4 +21,6 @@ var orchestrator = builder.AddProject<PaperBoy_Orchestrator>("orchestrator")
     .WithReference(contentProcessor)
     .WithReference(contentstore);
 
+var dashboard = builder.AddNpmApp("dashboard", "../../apps/dashboard", "dev");
+
 builder.Build().Run();
