@@ -77,4 +77,18 @@ public class PaperTests
         var page = paper.Pages.Single();
         Assert.Equal(command.Summary, page.Summary);
     }
+
+    [Fact]
+    public async Task PaperDescriptionIsSubmittedCorrectly()
+    {
+        // Arrange
+        var paper = await TestObjectFactory.CreatePaperAsync();
+        var command = new SubmitDescriptionCommand(paper.Id, "Some Description");
+
+        // Act
+        paper.SubmitDescription(command);
+
+        // Assert
+        Assert.Equal(command.Description, paper.Description);
+    }
 }

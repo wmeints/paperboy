@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Emit;
-using PaperBoy.ContentStore.Domain.Commands;
+﻿using PaperBoy.ContentStore.Domain.Commands;
 using PaperBoy.ContentStore.Domain.Events;
 using PaperBoy.ContentStore.Domain.Shared;
 
@@ -70,7 +69,7 @@ public class Paper : AggregateRoot
     /// <summary>
     /// Gets the score for the paper.
     /// </summary>
-    public PaperScore Score { get; private set; }
+    public PaperScore? Score { get; private set; }
 
     /// <summary>
     /// Gets the pages of content for the paper.
@@ -119,6 +118,15 @@ public class Paper : AggregateRoot
     {
         EmitDomainEvent(new PageSummaryGeneratedEvent(command.PaperId,command.PageNumber,command.Summary));   
     }
+    
+    /// <summary>
+    /// Submits a generated description for the paper.
+    /// </summary>
+    /// <param name="command">Command data used to update the description.</param>
+    public void SubmitDescription(SubmitDescriptionCommand command)
+    {
+        EmitDomainEvent(new DescriptionGeneratedEvent(command.PaperId, command.Description));
+    }
 
     protected override bool TryApplyDomainEvent(object domainEvent)
     {
@@ -136,9 +144,18 @@ public class Paper : AggregateRoot
             case PageSummaryGeneratedEvent pageSummaryGeneratedEvent:
                 Apply(pageSummaryGeneratedEvent);
                 break;
+            case DescriptionGeneratedEvent descriptionGeneratedEvent:
+                Apply(descriptionGeneratedEvent);
+                break;
         }
 
         return true;
+    }
+
+    private void Apply(DescriptionGeneratedEvent pageSummaryGeneratedEvent)
+    {
+        Description = pageSummaryGeneratedEvent.Description;
+        Version++;
     }
 
     private void Apply(PageSummaryGeneratedEvent pageSummaryGeneratedEvent)

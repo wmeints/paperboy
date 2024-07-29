@@ -43,4 +43,12 @@ public interface IContentStoreClient
     /// <param name="request">The request containing the page summary details.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     Task SubmitPageSummary(Guid paperId, int pageNumber, SubmitPageSummaryRequest request);
+
+    /// <summary>
+    /// Submits a paper description asynchronously.
+    /// </summary>
+    /// <param name="paperId">The ID of the paper.</param>
+    /// <param name="request">The request containing the paper description details.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task SubmitPaperDescriptionAsync(Guid paperId, SubmitPaperDescriptionRequest request);
 }

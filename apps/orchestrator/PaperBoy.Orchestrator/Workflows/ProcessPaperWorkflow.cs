@@ -20,7 +20,7 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
     {
         var importResult = await ImportPaperAsync(context, input);
 
-        await SummarizePaperAsync(context, importResult);
+        var paperSummary = await SummarizePaperAsync(context, importResult);
         await ScorePaperAsync(context, importResult);
 
         var paperStatusResult = await GetPaperStatusAsync(context, importResult);
@@ -36,9 +36,13 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
         // in the weekly newsletter, on slack, and on LinkedIn. 
         if (paperStatusResult.Status == PaperStatus.Approved)
         {
-            var writePaperDescriptionResult = await context.CallActivityAsync<WritePaperDescriptionActivityOutput>(
-                nameof(WritePaperDescriptionActivity),
-                new WritePaperDescriptionActivityInput(importResult.PaperId));
+            var generatePaperDescriptionResult = await context.CallActivityAsync<GeneratePaperDescriptionActivityOutput>(
+                nameof(GeneratePaperDescriptionActivity),
+                new GeneratePaperDescriptionActivityInput(input.Title, paperSummary));
+
+            await context.CallActivityAsync(nameof(SubmitPaperDescriptionActivity),
+                new SubmitPaperDescriptionActivityInput(importResult.PaperId, 
+                    generatePaperDescriptionResult.Description));
         }
 
         return new object();
@@ -62,7 +66,7 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
                 scorePaperResult.Explanation));
     }
 
-    private static async Task SummarizePaperAsync(WorkflowContext context, ImportPaperActivityOutput importResult)
+    private static async Task<string> SummarizePaperAsync(WorkflowContext context, ImportPaperActivityOutput importResult)
     {
         var paperDetails = await context.CallActivityAsync<GetPaperDetailsActivityOutput>(nameof(GetPaperDetailsActivity),
             new GetPaperDetailsActivityInput(importResult.PaperId));
@@ -86,6 +90,8 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
                 importResult.PaperId,
                 summarizePaperResult.Summary, 
                 summarizePaperResult.PageSummaries));
+
+        return summarizePaperResult.Summary;
     }
 
     private static async Task<ImportPaperActivityOutput> ImportPaperAsync(WorkflowContext context, ProcessPaperWorkflowInput input)

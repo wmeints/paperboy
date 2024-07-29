@@ -1,0 +1,2 @@
+﻿You're a world-class journalist, and you've been asked to write a newsletter for a prestigious publication.
+Write a compelling three-sentence long description of the summarized paper for the Global AI Community weekly newsletter.

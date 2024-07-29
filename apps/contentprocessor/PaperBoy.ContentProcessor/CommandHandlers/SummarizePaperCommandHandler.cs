@@ -9,9 +9,8 @@ namespace PaperBoy.ContentProcessor.CommandHandlers;
 /// <summary>
 /// Handles the command to summarize a paper.
 /// </summary>
-/// <param name="summarizePageFunction">The function to summarize a page using a semantic kernel.</param>
 /// <param name="summarizePaperFunction">The function to summarize a paper using a semantic kernel.</param>
-public class SummarizePaperCommandHandler(SummarizePageFunction summarizePageFunction, SummarizePaperFunction summarizePaperFunction, ILogger<SummarizePaperCommandHandler> logger)
+public class SummarizePaperCommandHandler(SummarizePaperFunction summarizePaperFunction)
 {
     /// <summary>
     /// Asynchronously executes the command to summarize a paper.

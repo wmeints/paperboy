@@ -22,4 +22,11 @@ public interface IContentProcessorClient
     /// <param name="request">Request data needed to generate the summaries.</param>
     /// <returns>Returns the summarized content.</returns>
     Task<SummarizePageResponse> SummarizePageAsync(SummarizePageRequest request);
+    
+    /// <summary>
+    /// Generates a newsletter description for a summarized paper.
+    /// </summary>
+    /// <param name="request">Request data needed to generate the description.</param>
+    /// <returns>Returns the response.</returns>
+    Task<GeneratePaperDescriptionResponse> GeneratePaperDescriptionAsync(GeneratePaperDescriptionRequest request);
 }

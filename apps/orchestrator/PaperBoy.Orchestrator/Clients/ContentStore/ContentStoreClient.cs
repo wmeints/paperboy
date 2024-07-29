@@ -62,4 +62,17 @@ public class ContentStoreClient(DaprClient daprClient) : IContentStoreClient
         await daprClient.InvokeMethodAsync(HttpMethod.Put, "contentstore",
             $"papers/{paperId}/pages/{pageNumber}/summary", request);
     }
+
+    /// <summary>
+    /// Submits a paper description asynchronously.
+    /// </summary>
+    /// <param name="paperId">The ID of the paper.</param>
+    /// <param name="request">The request containing the paper description details.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task SubmitPaperDescriptionAsync(Guid paperId, SubmitPaperDescriptionRequest request)
+    {
+        await daprClient.InvokeMethodAsync(HttpMethod.Put, "contentstore", 
+            $"papers/{paperId}/description",
+            request);
+    }
 }

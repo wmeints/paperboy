@@ -40,4 +40,15 @@ public class ContentProcessorClient(DaprClient daprClient): IContentProcessorCli
         return await daprClient.InvokeMethodAsync<SummarizePageRequest, SummarizePageResponse>(
             HttpMethod.Post, "contentprocessor", "SummarizePage", request);
     }
+
+    /// <summary>
+    /// Generates a newsletter description for a summarized paper.
+    /// </summary>
+    /// <param name="request">Request data needed to generate the description.</param>
+    /// <returns>Returns the response.</returns>
+    public async Task<GeneratePaperDescriptionResponse> GeneratePaperDescriptionAsync(GeneratePaperDescriptionRequest request)
+    {
+        return await daprClient.InvokeMethodAsync<GeneratePaperDescriptionRequest, GeneratePaperDescriptionResponse>(
+            HttpMethod.Post, "contentprocessor", "GenerateDescription", request);
+    }
 }

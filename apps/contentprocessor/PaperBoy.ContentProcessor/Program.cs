@@ -1,7 +1,7 @@
-using Microsoft.SemanticKernel;
 using PaperBoy.ContentProcessor;
 using PaperBoy.ContentProcessor.CommandHandlers;
 using PaperBoy.ContentProcessor.Requests;
+using PaperBoy.ContentProcessor.Skills.Description.NewsletterDescription;
 using PaperBoy.ContentProcessor.Skills.Scoring.ScorePaper;
 using PaperBoy.ContentProcessor.Skills.Summarization.SummarizePage;
 using PaperBoy.ContentProcessor.Skills.Summarization.SummarizePaper;
@@ -14,9 +14,11 @@ builder.AddSemanticKernel();
 builder.Services.AddTransient<SummarizePaperCommandHandler>();
 builder.Services.AddTransient<GeneratePaperScoreCommandHandler>();
 builder.Services.AddTransient<SummarizePageCommandHandler>();
+builder.Services.AddTransient<GenerateDescriptionCommandHandler>();
 builder.Services.AddTransient<SummarizePageFunction>();
 builder.Services.AddTransient<SummarizePaperFunction>();
 builder.Services.AddTransient<GeneratePaperScoreFunction>();
+builder.Services.AddTransient<GenerateNewsletterDescriptionFunction>();
 
 var app = builder.Build();
 
@@ -33,6 +35,12 @@ app.MapPost("/SummarizePage", async (SummarizePageRequest request, SummarizePage
 });
 
 app.MapPost("/GenerateScore", async (GeneratePaperScoreRequest request, GeneratePaperScoreCommandHandler commandHandler) =>
+{
+    var response = await commandHandler.ExecuteAsync(request);
+    return Results.Ok(response);
+});
+
+app.MapPost("/GenerateDescription", async (GeneratePaperDescriptionRequest request, GenerateDescriptionCommandHandler commandHandler) =>
 {
     var response = await commandHandler.ExecuteAsync(request);
     return Results.Ok(response);

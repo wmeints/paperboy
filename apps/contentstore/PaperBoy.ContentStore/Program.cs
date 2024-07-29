@@ -31,6 +31,7 @@ builder.Services.AddScoped<ImportPaperCommandHandler>();
 builder.Services.AddScoped<SubmitSummaryCommandHandler>();
 builder.Services.AddScoped<SubmitScoreCommandHandler>();
 builder.Services.AddScoped<SubmitPageSummaryCommandHandler>();
+builder.Services.AddScoped<SubmitDescriptionCommandHandler>();
 
 var app = builder.Build();
 
@@ -46,30 +47,67 @@ app.MapPost("/import", async (ImportPaperRequest form, ImportPaperCommandHandler
 
 app.MapPut("/papers/{paperId}/summary", async (Guid paperId, SubmitPaperSummaryRequest request, SubmitSummaryCommandHandler commandHandler) =>
 {
-    var updateSummaryCommand = new SubmitSummaryCommand(paperId, request.Summary);
+    try
+    {
+        var updateSummaryCommand = new SubmitSummaryCommand(paperId, request.Summary);
 
-    await commandHandler.ExecuteAsync(updateSummaryCommand);
+        await commandHandler.ExecuteAsync(updateSummaryCommand);
 
-    return Results.Accepted();
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
 });
 
 app.MapPut("/papers/{paperId}/pages/{pageNumber}/summary", async (Guid paperId, int pageNumber,
     SubmitPageSummaryRequest request, SubmitPageSummaryCommandHandler commandHandler) =>
 {
-    var submitPageSummaryCommand = new SubmitPageSummaryCommand(paperId, pageNumber, request.Summary);
+    try
+    {
+        var submitPageSummaryCommand = new SubmitPageSummaryCommand(paperId, pageNumber, request.Summary);
 
-    await commandHandler.ExecuteAsync(submitPageSummaryCommand);
+        await commandHandler.ExecuteAsync(submitPageSummaryCommand);
 
-    return Results.Accepted();
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
 });
 
 app.MapPut("/papers/{paperId}/score", async (Guid paperId, SubmitPaperScoreRequest request, SubmitScoreCommandHandler commandHandler) =>
 {
-    var submitScoreCommand = new SubmitScoreCommand(paperId, request.Score, request.Explanation);
+    try
+    {
+        var submitScoreCommand = new SubmitScoreCommand(paperId, request.Score, request.Explanation);
 
-    await commandHandler.ExecuteAsync(submitScoreCommand);
+        await commandHandler.ExecuteAsync(submitScoreCommand);
 
-    return Results.Accepted();
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
+});
+
+app.MapPut("/papers/{paperId}/description", async (Guid paperId, SubmitPaperDescriptionRequest request, SubmitDescriptionCommandHandler commandHandler) =>
+{
+    try
+    {
+        var submitDescriptionCommand = new SubmitDescriptionCommand(paperId, request.Description);
+
+        await commandHandler.ExecuteAsync(submitDescriptionCommand);
+
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
 });
 
 
