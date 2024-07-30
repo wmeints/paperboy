@@ -1,5 +1,4 @@
 using PaperBoy.ContentProcessor;
-using PaperBoy.ContentProcessor.CommandHandlers;
 using PaperBoy.ContentProcessor.Requests;
 using PaperBoy.ContentProcessor.Skills.Description.NewsletterDescription;
 using PaperBoy.ContentProcessor.Skills.Scoring.ScorePaper;
@@ -11,10 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddSemanticKernel();
 
-builder.Services.AddTransient<SummarizePaperCommandHandler>();
-builder.Services.AddTransient<GeneratePaperScoreCommandHandler>();
-builder.Services.AddTransient<SummarizePageCommandHandler>();
-builder.Services.AddTransient<GenerateDescriptionCommandHandler>();
 builder.Services.AddTransient<SummarizePageFunction>();
 builder.Services.AddTransient<SummarizePaperFunction>();
 builder.Services.AddTransient<GeneratePaperScoreFunction>();
@@ -22,28 +17,28 @@ builder.Services.AddTransient<GenerateNewsletterDescriptionFunction>();
 
 var app = builder.Build();
 
-app.MapPost("/Summarize", async (SummarizePaperRequest request, SummarizePaperCommandHandler commandHandler) =>
+app.MapPost("/Summarize", async (SummarizePaperRequest request, SummarizePaperFunction summarizePaperFunction) =>
 {
-    var response = await commandHandler.ExecuteAsync(request);
-    return Results.Ok(response);
+    var summary = await summarizePaperFunction.ExecuteAsync(request.Title, request.PageSummaries);
+    return Results.Ok(new { Summary = summary });
 });
 
-app.MapPost("/SummarizePage", async (SummarizePageRequest request, SummarizePageCommandHandler commandHandler) =>
+app.MapPost("/SummarizePage", async (SummarizePageRequest request, SummarizePageFunction summarizePageFunction) =>
 {
-    var response = await commandHandler.ExecuteAsync(request);
-    return Results.Ok(response);
+    var summary = await summarizePageFunction.ExecuteAsync(request.PaperTitle, request.PageContent);
+    return Results.Ok(new { Summary = summary });
 });
 
-app.MapPost("/GenerateScore", async (GeneratePaperScoreRequest request, GeneratePaperScoreCommandHandler commandHandler) =>
+app.MapPost("/GenerateScore", async (GeneratePaperScoreRequest request, GeneratePaperScoreFunction generatePaperScoreFunction) =>
 {
-    var response = await commandHandler.ExecuteAsync(request);
-    return Results.Ok(response);
+    var score = await generatePaperScoreFunction.ExecuteAsync(request.Title, request.Summary);
+    return Results.Ok(new { Score = score.Score, Explanation = score.Explanation });
 });
 
-app.MapPost("/GenerateDescription", async (GeneratePaperDescriptionRequest request, GenerateDescriptionCommandHandler commandHandler) =>
+app.MapPost("/GenerateDescription", async (GeneratePaperDescriptionRequest request, GenerateNewsletterDescriptionFunction generateNewsletterDescriptionFunction) =>
 {
-    var response = await commandHandler.ExecuteAsync(request);
-    return Results.Ok(response);
+    var description = await generateNewsletterDescriptionFunction.ExecuteAsync(request.Title, request.Summary);
+    return Results.Ok(new { Description = description });
 });
 
 app.MapDefaultEndpoints();
