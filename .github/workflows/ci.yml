@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build and Test Orchestrator
+        working-directory: apps/orchestrator/PaperBoy.Orchestrator.Tests/
+        run: |
+          dotnet test --configuration Release
+
+      - name: Publish Orchestrator
+        working-directory: apps/orchestrator/PaperBoy.Orchestrator/
+        run: dotnet publish --configuration Release --output ../../../dist/orchestrator
+
+      - name: Build and Test Content Store
+        working-directory: apps/contentstore/PaperBoy.ContentStore.Tests/
+        run: |
+          dotnet test --configuration Release
+
+      - name: Publish Content Store
+        working-directory: apps/contentstore/PaperBoy.ContentStore/
+        run: dotnet publish --configuration Release --output ../../../dist/contentstore
+
+      - name: Build and Test Content Processor
+        working-directory: apps/contentprocessor/PaperBoy.ContentProcessor.Tests/
+        run: |
+          dotnet test --configuration Release
+
+      - name: Publish Content Processor
+        working-directory: apps/contentprocessor/PaperBoy.ContentProcessor/
+        run: dotnet publish --configuration Release --output ../../../dist/contentprocessor
+
+      - name: Upload Artifacts for Orchestrator
+        uses: actions/upload-artifact@v2
+        with:
+          name: Orchestrator
+          path: dist/orchestrator
+
+      - name: Upload Artifacts for Content Store
+        uses: actions/upload-artifact@v2
+        with:
+          name: Content Store
+          path: dist/contentstore
+
+      - name: Upload Artifacts for Content Processor
+        uses: actions/upload-artifact@v2
+        with:
+          name: Content Processor
+          path: dist/contentprocessor
