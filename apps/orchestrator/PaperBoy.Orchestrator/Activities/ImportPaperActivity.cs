@@ -12,6 +12,12 @@ namespace PaperBoy.Orchestrator.Activities;
 /// <param name="contentStoreClient">Content store client to use for communicating with the content store.</param>
 public class ImportPaperActivity(IContentStoreClient contentStoreClient): WorkflowActivity<ImportPaperActivityInput, ImportPaperActivityOutput>
 {
+    /// <summary>
+    /// Executes the import paper activity asynchronously.
+    /// </summary>
+    /// <param name="context">The workflow activity context.</param>
+    /// <param name="input">The input for the import paper activity.</param>
+    /// <returns>The output of the import paper activity.</returns>
     public override async Task<ImportPaperActivityOutput> RunAsync(WorkflowActivityContext context, ImportPaperActivityInput input)
     {
         var result = await contentStoreClient.ImportPaperAsync(new ImportPaperRequest(input.Title, input.Url, input.Submitter));

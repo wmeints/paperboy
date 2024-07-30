@@ -12,8 +12,7 @@ public class ScorePaperActivity(IContentProcessorClient contentProcessorClient, 
 {
     public override async Task<ScorePaperActivityOutput> RunAsync(WorkflowActivityContext context, ScorePaperActivityInput input)
     {
-        var paper = await contentStoreClient.GetPaperAsync(input.PaperId);
-        var request = new GeneratePaperScoreRequest(paper.Title, paper.Summary!);
+        var request = new GeneratePaperScoreRequest(input.Title, input.Summary);
         var response = await contentProcessorClient.GeneratePaperScoreAsync(request);
 
         return new ScorePaperActivityOutput(response.Score, response.Explanation);

@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Dapr.Workflow;
+﻿using Dapr.Workflow;
 using PaperBoy.Orchestrator.Activities;
 using PaperBoy.Orchestrator.Events;
 using PaperBoy.Orchestrator.Models;
@@ -22,22 +21,23 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
         await ImportPaperAsync(context, input);
 
         var paperSummary = await SummarizePaperAsync(context, input.PaperId);
-        await ScorePaperAsync(context, input.PaperId);
+        await ScorePaperAsync(context, input.PaperId, input.Title, paperSummary);
 
-        var paperApprovalStateChanged = 
+        var paperApprovalStateChanged =
             await context.WaitForExternalEventAsync<PaperApprovalStateChangedWorkflowEvent>(
                 nameof(PaperApprovalStateChangedWorkflowEvent));
-        
+
         // When a paper is approved, we want to generate a nice description for it to use
         // in the weekly newsletter, on slack, and on LinkedIn. 
         if (paperApprovalStateChanged.State == ApprovalState.Approved)
         {
-            var generatePaperDescriptionResult = await context.CallActivityAsync<GeneratePaperDescriptionActivityOutput>(
-                nameof(GeneratePaperDescriptionActivity),
-                new GeneratePaperDescriptionActivityInput(input.Title, paperSummary));
+            var generatePaperDescriptionResult =
+                await context.CallActivityAsync<GeneratePaperDescriptionActivityOutput>(
+                    nameof(GeneratePaperDescriptionActivity),
+                    new GeneratePaperDescriptionActivityInput(input.Title, paperSummary));
 
             await context.CallActivityAsync(nameof(SubmitPaperDescriptionActivity),
-                new SubmitPaperDescriptionActivityInput(input.PaperId, 
+                new SubmitPaperDescriptionActivityInput(input.PaperId,
                     generatePaperDescriptionResult.Description));
         }
         else
@@ -49,11 +49,12 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
         return new object();
     }
 
-    private static async Task ScorePaperAsync(WorkflowContext context, Guid paperId)
+    private static async Task ScorePaperAsync(WorkflowContext context, Guid paperId, string paperTitle,
+        string paperSummary)
     {
         var scorePaperResult = await context.CallActivityAsync<ScorePaperActivityOutput>(
             nameof(ScorePaperActivity),
-            new ScorePaperActivityInput(paperId));
+            new ScorePaperActivityInput(paperTitle, paperSummary));
 
         await context.CallActivityAsync(nameof(SubmitPaperScoreActivity),
             new SubmitPaperScoreActivityInput(paperId, scorePaperResult.Score,
@@ -62,9 +63,12 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
 
     private static async Task<string> SummarizePaperAsync(WorkflowContext context, Guid paperId)
     {
-        var paperDetails = await context.CallActivityAsync<GetPaperDetailsActivityOutput>(nameof(GetPaperDetailsActivity),
+        var paperDetails = await context.CallActivityAsync<GetPaperDetailsActivityOutput>(
+            nameof(GetPaperDetailsActivity),
             new GetPaperDetailsActivityInput(paperId));
 
+        var pageSummaries = new List<PageSummary>();
+        
         foreach (var page in paperDetails.Pages)
         {
             var summaryResult = await context.CallActivityAsync<SummarizePageActivityOutput>(
@@ -73,29 +77,30 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
 
             await context.CallActivityAsync(nameof(SubmitPageSummaryActivity),
                 new SubmitPageSummaryActivityInput(paperId, page.PageNumber, summaryResult.Summary));
+            
+            pageSummaries.Add(new PageSummary(page.PageNumber, summaryResult.Summary));
         }
-        
+
         var summarizePaperResult = await context.CallActivityAsync<SummarizePaperActivityOutput>(
             nameof(SummarizePaperActivity),
-            new SummarizePaperActivityInput(paperId));
+            new SummarizePaperActivityInput(paperDetails.Title, pageSummaries));
 
         await context.CallActivityAsync(nameof(SubmitPaperSummaryActivity),
             new SubmitPaperSummaryActivityInput(
-                paperId,
-                summarizePaperResult.Summary, 
-                summarizePaperResult.PageSummaries));
+                paperId, summarizePaperResult.Summary));
 
         return summarizePaperResult.Summary;
     }
 
-    private static async Task<ImportPaperActivityOutput> ImportPaperAsync(WorkflowContext context, ProcessPaperWorkflowInput input)
+    private static async Task<ImportPaperActivityOutput> ImportPaperAsync(WorkflowContext context,
+        ProcessPaperWorkflowInput input)
     {
         var activityInput = new ImportPaperActivityInput(input.PaperId, input.Title, input.Url, input.Submitter);
-        
+
         var activityOutput = await context.CallActivityAsync<ImportPaperActivityOutput>(
             nameof(ImportPaperActivity),
             activityInput);
-            
+
         return activityOutput;
     }
 }

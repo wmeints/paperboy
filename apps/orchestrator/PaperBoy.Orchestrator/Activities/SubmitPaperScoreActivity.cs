@@ -10,6 +10,12 @@ namespace PaperBoy.Orchestrator.Activities;
 /// <param name="contentStoreClient">Content store client to use.</param>
 public class SubmitPaperScoreActivity(IContentStoreClient contentStoreClient): WorkflowActivity<SubmitPaperScoreActivityInput, object>
 {
+    /// <summary>
+    /// Executes the workflow activity.
+    /// </summary>
+    /// <param name="context">Context of the activity.</param>
+    /// <param name="input">Input for the activity.</param>
+    /// <returns>Returns the output of the activity.</returns>
     public override async Task<object> RunAsync(WorkflowActivityContext context, SubmitPaperScoreActivityInput input)
     {
         await contentStoreClient.SubmitPaperScoreAsync(input.PaperId,

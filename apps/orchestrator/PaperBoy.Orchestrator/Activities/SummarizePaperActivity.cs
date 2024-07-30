@@ -21,11 +21,7 @@ public class SummarizePaperActivity(IContentStoreClient contentStoreClient, ICon
     /// <returns>A task that represents the asynchronous operation. The task result contains the output with the paper summary and page summaries.</returns>
     public override async Task<SummarizePaperActivityOutput> RunAsync(WorkflowActivityContext context, SummarizePaperActivityInput input)
     {
-        var paper = await contentStoreClient.GetPaperAsync(input.PaperId);
-        
-        var request = new SummarizePaperRequest(paper.Title, 
-            paper.Pages.Select(x => new PageSummary(x.PageNumber, x.Summary!)).ToList());
-        
+        var request = new SummarizePaperRequest(input.PaperTitle, input.PageSummaries);
         var response = await contentProcessorClient.SummarizePaperAsync(request);
 
         return new SummarizePaperActivityOutput(response.Summary, response.PageSummaries);
