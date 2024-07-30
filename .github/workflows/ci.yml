@@ -19,40 +19,34 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Build and Test Orchestrator
-        working-directory: apps/orchestrator
+        working-directory: apps/orchestrator/PaperBoy.Orchestrator.Tests/
         run: |
-          dotnet restore
-          dotnet build --configuration Release
           dotnet test --configuration Release
 
       - name: Publish Orchestrator
-        working-directory: apps/orchestrator
-        run: dotnet publish --configuration Release --output ../../dist/orchestrator
+        working-directory: apps/orchestrator/PaperBoy.Orchestrator/
+        run: dotnet publish --configuration Release --output ../../../dist/orchestrator
 
       - name: Build and Test Content Store
-        working-directory: apps/contentstore
+        working-directory: apps/contentstore/PaperBoy.ContentStore.Tests/
         run: |
-          dotnet restore
-          dotnet build --configuration Release
           dotnet test --configuration Release
 
       - name: Publish Content Store
-        working-directory: apps/contentstore
-        run: dotnet publish --configuration Release --output ../../dist/contentstore
+        working-directory: apps/contentstore/PaperBoy.ContentStore/
+        run: dotnet publish --configuration Release --output ../../../dist/contentstore
 
       - name: Build and Test Content Processor
-        working-directory: apps/contentprocessor
+        working-directory: apps/contentprocessor/PaperBoy.ContentProcessor.Tests/
         run: |
-          dotnet restore
-          dotnet build --configuration Release
           dotnet test --configuration Release
 
       - name: Publish Content Processor
-        working-directory: apps/contentprocessor
-        run: dotnet publish --configuration Release --output ../../dist/contentprocessor
+        working-directory: apps/contentprocessor/PaperBoy.ContentProcessor/
+        run: dotnet publish --configuration Release --output ../../../dist/contentprocessor
 
       - name: Upload Artifacts for Orchestrator
         uses: actions/upload-artifact@v2
