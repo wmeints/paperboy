@@ -49,13 +49,6 @@ public class ProcessPaperWorkflow : Workflow<ProcessPaperWorkflowInput, object>
         return new object();
     }
 
-    private static async Task<GetPaperStatusActivityOutput> GetPaperStatusAsync(WorkflowContext context, ImportPaperActivityOutput importResult)
-    {
-        return await context.CallActivityAsync<GetPaperStatusActivityOutput>(
-            nameof(GetPaperStatusActivity),
-            new GetPaperStatusActivityInput(importResult.PaperId));
-    }
-
     private static async Task ScorePaperAsync(WorkflowContext context, Guid paperId)
     {
         var scorePaperResult = await context.CallActivityAsync<ScorePaperActivityOutput>(
