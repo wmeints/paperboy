@@ -48,7 +48,8 @@ public class ContentStoreClient(DaprClient daprClient) : IContentStoreClient
     /// <returns>The response containing the paper details.</returns>
     public async Task<GetPaperResponse> GetPaperAsync(Guid paperId)
     {
-        return await daprClient.InvokeMethodAsync<GetPaperResponse>(HttpMethod.Get, "contentstore", $"papers/{paperId}");
+        return await daprClient.InvokeMethodAsync<GetPaperResponse>(HttpMethod.Get, "contentstore",
+            $"papers/{paperId}");
     }
 
     /// <summary>
@@ -71,8 +72,19 @@ public class ContentStoreClient(DaprClient daprClient) : IContentStoreClient
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SubmitPaperDescriptionAsync(Guid paperId, SubmitPaperDescriptionRequest request)
     {
-        await daprClient.InvokeMethodAsync(HttpMethod.Put, "contentstore", 
+        await daprClient.InvokeMethodAsync(HttpMethod.Put, "contentstore",
             $"papers/{paperId}/description",
             request);
+    }
+
+    /// <summary>
+    /// Declines a paper asynchronously.
+    /// </summary>
+    /// <param name="inputPaperId">The unique identifier of the paper to be declined.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task DeclinePaperAsync(Guid inputPaperId)
+    {
+        await daprClient.InvokeMethodAsync(HttpMethod.Post, "contentstore",
+            $"papers/{inputPaperId}/decline");
     }
 }

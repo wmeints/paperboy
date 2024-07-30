@@ -3,6 +3,7 @@ using Dapr.Workflow;
 using PaperBoy.Orchestrator.Activities;
 using PaperBoy.Orchestrator.Clients.ContentProcessor;
 using PaperBoy.Orchestrator.Clients.ContentStore;
+using PaperBoy.Orchestrator.Events;
 using PaperBoy.Orchestrator.Models;
 using PaperBoy.Orchestrator.Requests;
 using PaperBoy.Orchestrator.Workflows;
@@ -34,16 +35,44 @@ var app = builder.Build();
 
 app.MapPost("/papers", async (SubmitPaperRequest request, DaprClient daprClient) =>
 {
-    var instanceId = Guid.NewGuid().ToString();
+    var paperId = Guid.NewGuid();
 
-    var workflowInput = new ProcessPaperWorkflowInput(request.Title, request.Url,
+    var workflowInput = new ProcessPaperWorkflowInput(paperId, request.Title, request.Url,
         new SubmitterInformation(request.Name, request.EmailAddress));
     
 #pragma warning disable CS0618 // Disabled because workflow is not fully supported in Dapr .NET SDK yet
     
-    await daprClient.StartWorkflowAsync("dapr", nameof(ProcessPaperWorkflow), instanceId, workflowInput);
+    await daprClient.StartWorkflowAsync("dapr", nameof(ProcessPaperWorkflow), paperId.ToString(), workflowInput);
     
 #pragma warning restore CS0618
+
+    return Results.Accepted();
+});
+
+app.MapPost("/papers/{paperId}/approve", async (string paperId, DaprClient daprClient) =>
+{
+    var eventData = new PaperApprovalStateChangedWorkflowEvent(ApprovalState.Approved);
+    var eventName = nameof(PaperApprovalStateChangedWorkflowEvent);
+
+#pragma warning disable CS0618 // Disabled because workflow is not fully supported in Dapr .NET SDK yet
+    
+    await daprClient.RaiseWorkflowEventAsync(paperId, "dapr", eventName, eventData);
+    
+#pragma warning restore CS0618 // Type or member is obsolete
+
+    return Results.Accepted();
+});
+
+app.MapPost("/papers/{paperId}/decline", async (string paperId, DaprClient daprClient) =>
+{
+    var eventData = new PaperApprovalStateChangedWorkflowEvent(ApprovalState.Declined);
+    var eventName = nameof(PaperApprovalStateChangedWorkflowEvent);
+
+#pragma warning disable CS0618 // Disabled because workflow is not fully supported in Dapr .NET SDK yet
+    
+    await daprClient.RaiseWorkflowEventAsync(paperId, "dapr", eventName, eventData);
+    
+#pragma warning restore CS0618 // Type or member is obsolete
 
     return Results.Accepted();
 });

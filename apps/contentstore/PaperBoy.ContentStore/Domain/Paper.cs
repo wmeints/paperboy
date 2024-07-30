@@ -128,6 +128,15 @@ public class Paper : AggregateRoot
         EmitDomainEvent(new DescriptionGeneratedEvent(command.PaperId, command.Description));
     }
 
+    /// <summary>
+    /// Declines the paper because it's not suitable for the audience.
+    /// </summary>
+    /// <param name="cmd">Command data to use for declining the paper.</param>
+    public void Decline(DeclinePaperCommand cmd)
+    {
+        EmitDomainEvent(new PaperDeclinedEvent(cmd.PaperId));
+    }
+
     protected override bool TryApplyDomainEvent(object domainEvent)
     {
         switch (domainEvent)
@@ -147,9 +156,18 @@ public class Paper : AggregateRoot
             case DescriptionGeneratedEvent descriptionGeneratedEvent:
                 Apply(descriptionGeneratedEvent);
                 break;
+            case PaperDeclinedEvent paperDeclinedEvent:
+                Apply(paperDeclinedEvent);
+                break;
         }
 
         return true;
+    }
+
+    private void Apply(PaperDeclinedEvent pageSummaryGeneratedEvent)
+    {
+        Status = PaperStatus.Declined;
+        Version++;
     }
 
     private void Apply(DescriptionGeneratedEvent pageSummaryGeneratedEvent)

@@ -8,6 +8,11 @@ namespace PaperBoy.ContentStore.Requests;
 public class ImportPaperRequest
 {
     /// <summary>
+    /// Gets or sets the ID of the paper.
+    /// </summary>
+    public Guid PaperId { get; set; }
+    
+    /// <summary>
     /// Gets or sets the title of the paper.
     /// </summary>
     public string Title { get; set; } = default!;

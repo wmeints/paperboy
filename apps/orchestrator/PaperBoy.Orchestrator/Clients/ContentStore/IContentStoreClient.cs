@@ -51,4 +51,11 @@ public interface IContentStoreClient
     /// <param name="request">The request containing the paper description details.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     Task SubmitPaperDescriptionAsync(Guid paperId, SubmitPaperDescriptionRequest request);
+
+    /// <summary>
+    /// Declines the paper for further publication.
+    /// </summary>
+    /// <param name="inputPaperId">ID of the paper to decline.</param>
+    /// <returns>An awaitable task.</returns>
+    Task DeclinePaperAsync(Guid inputPaperId);
 }

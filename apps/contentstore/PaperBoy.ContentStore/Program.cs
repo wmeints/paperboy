@@ -32,17 +32,17 @@ builder.Services.AddScoped<SubmitSummaryCommandHandler>();
 builder.Services.AddScoped<SubmitScoreCommandHandler>();
 builder.Services.AddScoped<SubmitPageSummaryCommandHandler>();
 builder.Services.AddScoped<SubmitDescriptionCommandHandler>();
+builder.Services.AddScoped<DeclinePaperCommandHandler>();
 
 var app = builder.Build();
 
 app.MapPost("/import", async (ImportPaperRequest form, ImportPaperCommandHandler commandHandler) =>
 {
-    var paperId = Guid.NewGuid();
-    var importPaperCommand = new ImportPaperCommand(paperId, form.Title, form.Url, form.Submitter);
+    var importPaperCommand = new ImportPaperCommand(form.PaperId, form.Title, form.Url, form.Submitter);
 
     await commandHandler.ExecuteAsync(importPaperCommand);
 
-    return new ImportPaperResponse(paperId);
+    return Results.Accepted();
 });
 
 app.MapPut("/papers/{paperId}/summary", async (Guid paperId, SubmitPaperSummaryRequest request, SubmitSummaryCommandHandler commandHandler) =>
@@ -110,6 +110,18 @@ app.MapPut("/papers/{paperId}/description", async (Guid paperId, SubmitPaperDesc
     }
 });
 
+app.MapPost("/papers/{paperId}/decline", async (Guid paperId, DeclinePaperCommandHandler commandHandler) =>
+{
+    try
+    {
+        await commandHandler.ExecuteAsync(new DeclinePaperCommand(paperId));
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
+});
 
 app.MapGet("/papers/{paperId}/status", async (Guid paperId, IPaperRepository paperRepository) =>
 {
