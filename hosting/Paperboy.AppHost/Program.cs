@@ -4,10 +4,13 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var languageModel = builder.AddConnectionString("languagemodel");
 
-var sqlserver = builder.AddPostgres("postgres").WithDataVolume().WithInitBindMount("../../sql/initdb/");
+var sqlserver = builder.AddPostgres("postgres")
+    .WithDataVolume().WithInitBindMount("../../sql/initdb/");
+
 var contentstoreDb = sqlserver.AddDatabase("contentstoredb");
 
-var authentication = builder.AddKeycloak("authentication").WithDataVolume();
+var authentication = builder.AddKeycloak("authentication")
+    .WithDataVolume().WithRealmImport("../../data/keycloak/realm-import");
 
 var contentstore = builder.AddProject<PaperBoy_ContentStore>("contentstore")
     .WithDaprSidecar()
