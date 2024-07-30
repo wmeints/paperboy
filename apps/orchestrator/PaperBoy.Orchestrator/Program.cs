@@ -19,7 +19,6 @@ builder.Services.AddDaprWorkflow(options =>
     options.RegisterActivity<SubmitPaperSummaryActivity>();
     options.RegisterActivity<ScorePaperActivity>();
     options.RegisterActivity<SummarizePaperActivity>();
-    options.RegisterActivity<GetPaperStatusActivity>();
     options.RegisterActivity<GeneratePaperDescriptionActivity>();
     options.RegisterActivity<SummarizePageActivity>();
     options.RegisterActivity<SubmitPageSummaryActivity>();
