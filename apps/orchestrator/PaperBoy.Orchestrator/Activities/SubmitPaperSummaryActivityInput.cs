@@ -2,4 +2,9 @@
 
 namespace PaperBoy.Orchestrator.Activities;
 
-public record SubmitPaperSummaryActivityInput(Guid PaperId, string Summary, List<PageSummary> PageSummaries);
+/// <summary>
+/// Input for the <see cref="SubmitPaperSummaryActivity"/>
+/// </summary>
+/// <param name="PaperId">Identifier for the paper.</param>
+/// <param name="Summary">Summary for the paper.</param>
+public record SubmitPaperSummaryActivityInput(Guid PaperId, string Summary);

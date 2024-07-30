@@ -3,8 +3,6 @@ using PaperBoy.Orchestrator.Clients.ContentStore;
 
 namespace PaperBoy.Orchestrator.Activities;
 
-public record SubmitPaperDescriptionActivityInput(Guid PaperId, string PaperDescription);
-
 /// <summary>
 /// Submits the generated newsletter description for the paper to the content store.
 /// </summary>
