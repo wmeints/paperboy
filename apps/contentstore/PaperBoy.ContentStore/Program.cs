@@ -147,9 +147,10 @@ app.MapGet("/papers/{paperId}", async (Guid paperId, IPaperRepository paperRepos
     return Results.Ok(paper);
 });
 
-app.MapGet("/papers", async (IPaperInfoRepository paperInfoRepository, [FromQuery] int page = 0) =>
+app.MapGet("/papers", async (IPaperInfoRepository paperInfoRepository, [FromQuery] string? status, [FromQuery] int page = 0) =>
 {
-    var papers = await paperInfoRepository.GetAllAsync(page, 20);
+    var statuses = status?.Split(',') ?? new string[0];
+    var papers = await paperInfoRepository.GetByStatusAsync(statuses, page, 20);
     return Results.Ok(papers);
 });
 

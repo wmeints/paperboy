@@ -12,6 +12,8 @@ public class PaperInfoProjection : EventProjection
         Project<PageSummaryGeneratedEvent>(OnPageSummaryGenerated);
         Project<SummaryGeneratedEvent>(OnPaperSummarized);
         Project<ScoreGeneratedEvent>(OnPaperScored);
+        Project<PaperDeclinedEvent>(OnPaperDeclined);
+        Project<DescriptionGeneratedEvent>(OnDescriptionGenerated);
     }
 
     private void OnPaperScored(ScoreGeneratedEvent @event, IDocumentOperations operations)
@@ -55,5 +57,22 @@ public class PaperInfoProjection : EventProjection
         };
 
         operations.Insert(paperInfo);
+    }
+
+    private void OnPaperDeclined(PaperDeclinedEvent @event, IDocumentOperations operations)
+    {
+        var paperInfo = operations.Load<PaperInfo>(@event.PaperId)!;
+        paperInfo.Status = Domain.PaperStatus.Declined;
+
+        operations.Update(paperInfo);
+    }
+
+    private void OnDescriptionGenerated(DescriptionGeneratedEvent @event, IDocumentOperations operations)
+    {
+        var paperInfo = operations.Load<PaperInfo>(@event.PaperId)!;
+        paperInfo.Status = Domain.PaperStatus.Approved;
+        paperInfo.Description = @event.Description;
+
+        operations.Update(paperInfo);
     }
 }
