@@ -41,6 +41,8 @@ dotnet run --project ./hosting/PaperBoy.AppHost/PaperBoy.AppHost.csproj
 
 The application will self-provision the database and other resources it needs.
 
+You can use the Development container if you wish. Make sure to open it in VSCode.
+
 ## :book: Documentation
 
 The documentation is a work in progress. I've documented some of the things I'm working on in the application.
