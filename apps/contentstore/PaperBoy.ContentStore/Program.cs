@@ -33,6 +33,7 @@ builder.Services.AddScoped<SubmitScoreCommandHandler>();
 builder.Services.AddScoped<SubmitPageSummaryCommandHandler>();
 builder.Services.AddScoped<SubmitDescriptionCommandHandler>();
 builder.Services.AddScoped<DeclinePaperCommandHandler>();
+builder.Services.AddScoped<ApprovePaperCommandHandler>();
 
 var app = builder.Build();
 
@@ -115,6 +116,19 @@ app.MapPost("/papers/{paperId}/decline", async (Guid paperId, DeclinePaperComman
     try
     {
         await commandHandler.ExecuteAsync(new DeclinePaperCommand(paperId));
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
+});
+
+app.MapPost("/papers/{paperId}/approve", async (Guid paperId, ApprovePaperCommandHandler commandHandler) =>
+{
+    try
+    {
+        await commandHandler.ExecuteAsync(new ApprovePaperCommand(paperId));
         return Results.Accepted();
     }
     catch (PaperNotFoundException)

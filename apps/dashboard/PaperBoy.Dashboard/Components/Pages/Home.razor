@@ -1,4 +1,105 @@
 @page "/"
 @attribute [Authorize]
+@inject HttpClient Http
+@using PaperBoy.ContentStore.Application.Projections
+@using PaperBoy.ContentStore.Domain
 
-<h1>Hello world</h1>
+<h1>Submitted Papers</h1>
+
+<button class="btn btn-primary" @onclick="SubmitNewPaper">Submit New Paper</button>
+
+@if (papers == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table w-full">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Submitter</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>Sections Summarized</th>
+                <th>Total Sections</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var paper in papers.Items)
+            {
+                <tr>
+                    <td>@paper.Title</td>
+                    <td>@paper.Submitter.Name</td>
+                    <td><a href="@paper.Url" target="_blank">@paper.Url</a></td>
+                    <td><span class="badge">@paper.Status</span></td>
+                    <td>@paper.SectionsSummarized</td>
+                    <td>@paper.TotalSections</td>
+                    <td>
+                        @if (paper.Status == PaperStatus.Scored)
+                        {
+                            <button class="btn btn-success" @onclick="() => ApprovePaper(paper.Id)">Approve</button>
+                            <button class="btn btn-danger" @onclick="() => DeclinePaper(paper.Id)">Decline</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="flex justify-center mt-4">
+        <button class="btn" @onclick="PreviousPage" disabled="@(!papers.HasPreviousPage)">Previous</button>
+        <button class="btn" @onclick="NextPage" disabled="@(!papers.HasNextPage)">Next</button>
+    </div>
+}
+
+@code {
+    private PagedResult<PaperInfo>? papers;
+    private int currentPage = 1;
+    private const int pageSize = 20;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPapers();
+    }
+
+    private async Task LoadPapers()
+    {
+        var response = await Http.GetFromJsonAsync<PagedResult<PaperInfo>>($"/papers?page={currentPage}&pageSize={pageSize}&status=imported,summarized,scored,approved");
+        papers = response;
+    }
+
+    private async Task SubmitNewPaper()
+    {
+        // Logic to submit a new paper
+    }
+
+    private async Task ApprovePaper(Guid paperId)
+    {
+        // Logic to approve a paper
+    }
+
+    private async Task DeclinePaper(Guid paperId)
+    {
+        // Logic to decline a paper
+    }
+
+    private async Task PreviousPage()
+    {
+        if (papers?.HasPreviousPage == true)
+        {
+            currentPage--;
+            await LoadPapers();
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (papers?.HasNextPage == true)
+        {
+            currentPage++;
+            await LoadPapers();
+        }
+    }
+}

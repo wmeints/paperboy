@@ -137,6 +137,15 @@ public class Paper : AggregateRoot
         EmitDomainEvent(new PaperDeclinedEvent(cmd.PaperId));
     }
 
+    /// <summary>
+    /// Approves the paper because it is suitable for the audience.
+    /// </summary>
+    /// <param name="cmd">Command data to use for approving the paper.</param>
+    public void Approve(ApprovePaperCommand cmd)
+    {
+        EmitDomainEvent(new PaperApprovedEvent(cmd.PaperId));
+    }
+
     protected override bool TryApplyDomainEvent(object domainEvent)
     {
         switch (domainEvent)
@@ -158,6 +167,9 @@ public class Paper : AggregateRoot
                 break;
             case PaperDeclinedEvent paperDeclinedEvent:
                 Apply(paperDeclinedEvent);
+                break;
+            case PaperApprovedEvent paperApprovedEvent:
+                Apply(paperApprovedEvent);
                 break;
         }
 
@@ -214,5 +226,9 @@ public class Paper : AggregateRoot
         Version++;
     }
 
-    
+    private void Apply(PaperApprovedEvent paperApprovedEvent)
+    {
+        Status = PaperStatus.Approved;
+        Version++;
+    }
 }
