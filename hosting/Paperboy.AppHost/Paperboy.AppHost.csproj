@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\apps\contentprocessor\PaperBoy.ContentProcessor\PaperBoy.ContentProcessor.csproj" />
     <ProjectReference Include="..\..\apps\contentstore\PaperBoy.ContentStore\PaperBoy.ContentStore.csproj" />
     <ProjectReference Include="..\..\apps\orchestrator\PaperBoy.Orchestrator\PaperBoy.Orchestrator.csproj" />
+    <ProjectReference Include="..\..\apps\dashboard\PaperBoy.Dashboard\PaperBoy.Dashboard.csproj" />
   </ItemGroup>
 
 </Project>
