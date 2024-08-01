@@ -1,9 +1,15 @@
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using PaperBoy.Dashboard.Clients.ContentStore;
+using PaperBoy.Dashboard.Clients.Orchestrator;
 using PaperBoy.Dashboard.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
+
+builder.Services.AddDaprClient();
 
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
@@ -17,6 +23,9 @@ builder.Services.AddAntiforgery();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
+builder.Services.AddTransient<IContentStoreClient, ContentStoreClient>();
+builder.Services.AddTransient<IOrchestratorClient, OrchestratorClient>();
+
 var app = builder.Build();
 
 app.UseStaticFiles();
@@ -27,7 +36,7 @@ app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/Account/Login", async (HttpContext HttpContext, string returnUrl = "/") =>
+app.MapGet("/Account/Login", async Task (HttpContext HttpContext, string returnUrl = "/") =>
 {
     var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
         .WithRedirectUri(returnUrl)

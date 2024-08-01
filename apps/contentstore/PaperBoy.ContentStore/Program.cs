@@ -6,7 +6,6 @@ using PaperBoy.ContentStore.Domain;
 using PaperBoy.ContentStore.Domain.Commands;
 using PaperBoy.ContentStore.Infrastructure;
 using PaperBoy.ContentStore.Requests;
-using PaperBoy.ContentStore.Responses;
 using Weasel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +32,7 @@ builder.Services.AddScoped<SubmitScoreCommandHandler>();
 builder.Services.AddScoped<SubmitPageSummaryCommandHandler>();
 builder.Services.AddScoped<SubmitDescriptionCommandHandler>();
 builder.Services.AddScoped<DeclinePaperCommandHandler>();
+builder.Services.AddScoped<ApprovePaperCommandHandler>();
 
 var app = builder.Build();
 
@@ -45,21 +45,22 @@ app.MapPost("/import", async (ImportPaperRequest form, ImportPaperCommandHandler
     return Results.Accepted();
 });
 
-app.MapPut("/papers/{paperId}/summary", async (Guid paperId, SubmitPaperSummaryRequest request, SubmitSummaryCommandHandler commandHandler) =>
-{
-    try
+app.MapPut("/papers/{paperId}/summary",
+    async (Guid paperId, SubmitPaperSummaryRequest request, SubmitSummaryCommandHandler commandHandler) =>
     {
-        var updateSummaryCommand = new SubmitSummaryCommand(paperId, request.Summary);
+        try
+        {
+            var updateSummaryCommand = new SubmitSummaryCommand(paperId, request.Summary);
 
-        await commandHandler.ExecuteAsync(updateSummaryCommand);
+            await commandHandler.ExecuteAsync(updateSummaryCommand);
 
-        return Results.Accepted();
-    }
-    catch (PaperNotFoundException)
-    {
-        return Results.NotFound();
-    }
-});
+            return Results.Accepted();
+        }
+        catch (PaperNotFoundException)
+        {
+            return Results.NotFound();
+        }
+    });
 
 app.MapPut("/papers/{paperId}/pages/{pageNumber}/summary", async (Guid paperId, int pageNumber,
     SubmitPageSummaryRequest request, SubmitPageSummaryCommandHandler commandHandler) =>
@@ -78,23 +79,25 @@ app.MapPut("/papers/{paperId}/pages/{pageNumber}/summary", async (Guid paperId, 
     }
 });
 
-app.MapPut("/papers/{paperId}/score", async (Guid paperId, SubmitPaperScoreRequest request, SubmitScoreCommandHandler commandHandler) =>
-{
-    try
+app.MapPut("/papers/{paperId}/score",
+    async (Guid paperId, SubmitPaperScoreRequest request, SubmitScoreCommandHandler commandHandler) =>
     {
-        var submitScoreCommand = new SubmitScoreCommand(paperId, request.Score, request.Explanation);
+        try
+        {
+            var submitScoreCommand = new SubmitScoreCommand(paperId, request.Score, request.Explanation);
 
-        await commandHandler.ExecuteAsync(submitScoreCommand);
+            await commandHandler.ExecuteAsync(submitScoreCommand);
 
-        return Results.Accepted();
-    }
-    catch (PaperNotFoundException)
-    {
-        return Results.NotFound();
-    }
-});
+            return Results.Accepted();
+        }
+        catch (PaperNotFoundException)
+        {
+            return Results.NotFound();
+        }
+    });
 
-app.MapPut("/papers/{paperId}/description", async (Guid paperId, SubmitPaperDescriptionRequest request, SubmitDescriptionCommandHandler commandHandler) =>
+app.MapPut("/papers/{paperId}/description", async (Guid paperId, SubmitPaperDescriptionRequest request,
+    SubmitDescriptionCommandHandler commandHandler) =>
 {
     try
     {
@@ -115,6 +118,19 @@ app.MapPost("/papers/{paperId}/decline", async (Guid paperId, DeclinePaperComman
     try
     {
         await commandHandler.ExecuteAsync(new DeclinePaperCommand(paperId));
+        return Results.Accepted();
+    }
+    catch (PaperNotFoundException)
+    {
+        return Results.NotFound();
+    }
+});
+
+app.MapPost("/papers/{paperId}/approve", async (Guid paperId, ApprovePaperCommandHandler commandHandler) =>
+{
+    try
+    {
+        await commandHandler.ExecuteAsync(new ApprovePaperCommand(paperId));
         return Results.Accepted();
     }
     catch (PaperNotFoundException)
@@ -147,11 +163,22 @@ app.MapGet("/papers/{paperId}", async (Guid paperId, IPaperRepository paperRepos
     return Results.Ok(paper);
 });
 
-app.MapGet("/papers", async (IPaperInfoRepository paperInfoRepository, [FromQuery] int page = 0) =>
-{
-    var papers = await paperInfoRepository.GetAllAsync(page, 20);
-    return Results.Ok(papers);
-});
+app.MapGet("/papers/all",
+    async (IPaperInfoRepository paperInfoRepository, [FromQuery] int page = 0) =>
+    {
+        var papers = await paperInfoRepository.GetAllAsync(page, 20);
+
+        return Results.Ok(papers);
+    });
+
+app.MapGet("/papers/pending",
+    async (IPaperInfoRepository paperInfoRepository, [FromQuery] int page = 0) =>
+    {
+        var papers = await paperInfoRepository.GetPendingAsync(page, 20);
+
+        return Results.Ok(papers);
+    });
+
 
 app.MapDefaultEndpoints();
 
