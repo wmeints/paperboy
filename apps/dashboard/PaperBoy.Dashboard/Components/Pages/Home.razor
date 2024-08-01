@@ -1,7 +1,10 @@
 @page "/"
+@rendermode RenderMode.InteractiveServer
 @using PaperBoy.Dashboard.Clients.ContentStore
+@using PaperBoy.Dashboard.Clients.Orchestrator
 @attribute [Authorize]
 @inject IContentStoreClient ContentStore
+@inject IOrchestratorClient Orchestrator
 
 <div class="container mx-auto">
     <h1 class="text-4xl font-bold mb-4">Pending papers</h1>
@@ -57,8 +60,15 @@
         </table>
 
         <div class="flex justify-center mt-4 space-x-1">
-            <button class="btn btn-ghost" @onclick="PreviousPage" disabled="@(!_papers.HasPreviousPage)">Previous</button>
-            <button class="btn btn-ghost" @onclick="NextPage" disabled="@(!_papers.HasNextPage)">Next</button>
+            @if (_papers.HasPreviousPage)
+            {
+                <button class="btn btn-ghost" @onclick="PreviousPage">Previous</button>    
+            }
+            
+            @if (_papers.HasNextPage)
+            {
+                <button class="btn btn-ghost" @onclick="NextPage">Next</button>    
+            }
         </div>
     }
 </div>
@@ -88,12 +98,14 @@
 
     private async Task ApprovePaper(Guid paperId)
     {
-        // Logic to approve a paper
+        await Orchestrator.ApprovePaperAsync(paperId);
+        await LoadPapers();
     }
 
     private async Task DeclinePaper(Guid paperId)
     {
-        // Logic to decline a paper
+        await Orchestrator.ApprovePaperAsync(paperId);
+        await LoadPapers();
     }
 
     private async Task PreviousPage()
