@@ -2,6 +2,10 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+var authenticationDomain = builder.AddParameter("authenticationDomain");
+var authenticationClientId = builder.AddParameter("authenticationClientId");
+var authenticationClientSecret = builder.AddParameter("authenticationClientSecret");
+
 var languageModel = builder.AddConnectionString("languagemodel");
 
 var sqlserver = builder.AddPostgres("postgres")
@@ -26,6 +30,9 @@ var orchestrator = builder.AddProject<PaperBoy_Orchestrator>("orchestrator")
 var dashboard = builder.AddProject<PaperBoy_Dashboard>("dashboard")
     .WithDaprSidecar()
     .WithReference(orchestrator)
-    .WithReference(contentstore);
+    .WithReference(contentstore)
+    .WithEnvironment("Auth0__Domain", authenticationDomain)
+    .WithEnvironment("Auth0__ClientId", authenticationClientId)
+    .WithEnvironment("Auth0__ClientSecret", authenticationClientSecret);
 
 builder.Build().Run();
