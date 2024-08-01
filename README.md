@@ -10,7 +10,7 @@ This application is changing that. I use this web application for a number of go
 - Track papers with metadata in a knowledge graph.
 - Provide a searchable interface for newsletter-published papers.
 
-To be honest, this application is also to show off just what you can do with tools like 
+To be honest, this application is also to show off just what you can do with tools like
 [Semantic Kernel](https://github.com/microsoft/semantic-kernel), and [Aspire](https://github.com/dotnet/aspire). So
 it's a _little_ over-engineered.
 
@@ -23,6 +23,15 @@ it's a _little_ over-engineered.
 Please make sure you run `dapr init` before attempting to start the application! It won't run otherwise.
 
 ## :rocket: Getting started
+
+Make sure you've set up an Auth0 application on their website.
+Next, set the information for the Auth0 application using the following commands:
+
+```bash
+dotnet user-secrets set --project ./hosting/Paperboy.AppHost/Paperboy.AppHost.csproj "Parameters:authenticationDomain <auth0 Domain>"
+dotnet user-secrets set --project ./hosting/Paperboy.AppHost/Paperboy.AppHost.csproj "Parameters:authenticationClientId <auth0 ClientID>"
+dotnet user-secrets set --project ./hosting/Paperboy.AppHost/Paperboy.AppHost.csproj "Parameters:authenticationClientSecret <auth0 ClientSecret>"
+```
 
 You can run this solution locally. Clone the repository and run the following command:
 
