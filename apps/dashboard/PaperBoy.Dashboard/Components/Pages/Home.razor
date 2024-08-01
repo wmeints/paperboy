@@ -10,7 +10,7 @@
     <h1 class="text-4xl font-bold mb-4">Pending papers</h1>
 
     <div class="mb-4">
-        <button class="btn btn-primary" @onclick="SubmitNewPaper">Submit New Paper</button>
+        <button class="btn btn-primary" @onclick="NavigateToSubmitPaper">Submit New Paper</button>
     </div>
 
     @if (_papers == null)
@@ -91,9 +91,9 @@
         _papers = response;
     }
 
-    private async Task SubmitNewPaper()
+    private void NavigateToSubmitPaper()
     {
-        // Logic to submit a new paper
+        Navigation.NavigateTo("/papers/submit");
     }
 
     private async Task ApprovePaper(Guid paperId)

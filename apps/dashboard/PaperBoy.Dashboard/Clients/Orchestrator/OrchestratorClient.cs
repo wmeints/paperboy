@@ -13,4 +13,10 @@ public class OrchestratorClient(DaprClient daprClient): IOrchestratorClient
     {
         await daprClient.InvokeMethodAsync(HttpMethod.Post, "orchestrator", $"papers/{paperId}/decline");
     }
+
+    public async Task SubmitPaperAsync(string title, string url, string name, string emailAddress)
+    {
+        var request = new SubmitPaperRequest(title, url, emailAddress, name);
+        await daprClient.InvokeMethodAsync(HttpMethod.Post, "orchestrator", "papers", request);
+    }
 }
