@@ -11,6 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\" />
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\Paperboy.ServiceDefaults\Paperboy.ServiceDefaults.csproj" />
   </ItemGroup>
 </Project>

@@ -1,21 +1,23 @@
 @page "/"
+@using PaperBoy.Dashboard.Clients.ContentStore
 @attribute [Authorize]
-@inject HttpClient Http
-@using PaperBoy.ContentStore.Application.Projections
-@using PaperBoy.ContentStore.Domain
+@inject IContentStoreClient ContentStore
 
-<h1>Submitted Papers</h1>
+<div class="container mx-auto">
+    <h1 class="text-4xl font-bold mb-4">Pending papers</h1>
 
-<button class="btn btn-primary" @onclick="SubmitNewPaper">Submit New Paper</button>
+    <div class="mb-4">
+        <button class="btn btn-primary" @onclick="SubmitNewPaper">Submit New Paper</button>
+    </div>
 
-@if (papers == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <table class="table w-full">
-        <thead>
+    @if (_papers == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <table class="table w-full">
+            <thead>
             <tr>
                 <th>Title</th>
                 <th>Submitter</th>
@@ -25,39 +27,46 @@ else
                 <th>Total Sections</th>
                 <th>Actions</th>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var paper in papers.Items)
+            </thead>
+            <tbody>
+            @foreach (var paper in _papers.Items)
             {
                 <tr>
                     <td>@paper.Title</td>
-                    <td>@paper.Submitter.Name</td>
-                    <td><a href="@paper.Url" target="_blank">@paper.Url</a></td>
-                    <td><span class="badge">@paper.Status</span></td>
+                    <td>
+                        <a class="underline hover:no-underline text-blue-600" href="mailto:@paper.Submitter?.EmailAddress">@paper.Submitter?.Name</a>
+                    </td>
+                    <td>
+                        <a class="underline hover:no-underline text-blue-600" href="@paper.Url" target="_blank">@paper.Url</a>
+                    </td>
+                    <td>
+                        <span class="badge">@paper.Status</span>
+                    </td>
                     <td>@paper.SectionsSummarized</td>
                     <td>@paper.TotalSections</td>
                     <td>
                         @if (paper.Status == PaperStatus.Scored)
                         {
-                            <button class="btn btn-success" @onclick="() => ApprovePaper(paper.Id)">Approve</button>
-                            <button class="btn btn-danger" @onclick="() => DeclinePaper(paper.Id)">Decline</button>
+                            <button class="btn btn-ghost btn-sm" @onclick="() => ApprovePaper(paper.Id)">Approve</button>
+                            <button class="btn btn-ghost btn-sm" @onclick="() => DeclinePaper(paper.Id)">Decline</button>
                         }
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    <div class="flex justify-center mt-4">
-        <button class="btn" @onclick="PreviousPage" disabled="@(!papers.HasPreviousPage)">Previous</button>
-        <button class="btn" @onclick="NextPage" disabled="@(!papers.HasNextPage)">Next</button>
-    </div>
-}
+        <div class="flex justify-center mt-4 space-x-1">
+            <button class="btn btn-ghost" @onclick="PreviousPage" disabled="@(!_papers.HasPreviousPage)">Previous</button>
+            <button class="btn btn-ghost" @onclick="NextPage" disabled="@(!_papers.HasNextPage)">Next</button>
+        </div>
+    }
+</div>
 
 @code {
-    private PagedResult<PaperInfo>? papers;
-    private int currentPage = 1;
-    private const int pageSize = 20;
+    private PagedResult<PaperInfo>? _papers;
+    private int _currentPage = 1;
+    private const int PageSize = 20;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,8 +75,10 @@ else
 
     private async Task LoadPapers()
     {
-        var response = await Http.GetFromJsonAsync<PagedResult<PaperInfo>>($"/papers?page={currentPage}&pageSize={pageSize}&status=imported,summarized,scored,approved");
-        papers = response;
+        PaperStatus[] paperStatusArray = [PaperStatus.Imported, PaperStatus.Summarized, PaperStatus.Scored];
+        var response = await ContentStore.GetPendingPapersAsync(paperStatusArray, _currentPage);
+
+        _papers = response;
     }
 
     private async Task SubmitNewPaper()
@@ -87,19 +98,20 @@ else
 
     private async Task PreviousPage()
     {
-        if (papers?.HasPreviousPage == true)
+        if (_papers?.HasPreviousPage == true)
         {
-            currentPage--;
+            _currentPage--;
             await LoadPapers();
         }
     }
 
     private async Task NextPage()
     {
-        if (papers?.HasNextPage == true)
+        if (_papers?.HasNextPage == true)
         {
-            currentPage++;
+            _currentPage++;
             await LoadPapers();
         }
     }
+
 }

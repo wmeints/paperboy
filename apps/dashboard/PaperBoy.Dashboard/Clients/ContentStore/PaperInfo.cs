@@ -1,6 +1,4 @@
-using System;
-
-namespace PaperBoy.Dashboard.Models
+namespace PaperBoy.Dashboard.Clients.ContentStore
 {
     public class PaperInfo
     {
