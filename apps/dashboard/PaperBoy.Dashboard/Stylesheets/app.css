@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .validation-messages {
+        @apply p-4;
+        @apply border;
+        @apply rounded-md;
+        @apply bg-red-500;
+        @apply border-red-600;
+        @apply text-white;
+    }
+    
+    .form-control .validation-message {
+        @apply text-red-500;
+    }
+    
+    .form-control input.invalid {
+        @apply border-red-500;
+    }
+}

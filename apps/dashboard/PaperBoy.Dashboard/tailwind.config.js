@@ -10,6 +10,11 @@ module.exports = {
   daisyui: {
     logs: false,
     themes: false
-  }
+  },
+  safelist: [
+      "validation-message",
+      "validation-messages",
+      "invalid"
+  ]
 }
 

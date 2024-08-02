@@ -1,0 +1,67 @@
+@page "/papers/submit"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using PaperBoy.Dashboard.Clients.Orchestrator
+@inject IOrchestratorClient Orchestrator
+@inject NavigationManager Navigation
+
+<div class="container mx-auto">
+    <h1 class="text-4xl font-bold mb-4">Submit paper</h1>
+    <EditForm Model="_paper" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary class="validation-messages"/>
+        <div class="form-control w-full max-w-xs">
+            <label for="title" class="label">Title</label>
+            <InputText id="title" class="input input-bordered w-full" @bind-Value="_paper.Title"/>
+            <ValidationMessage For="@(() => _paper.Title)"/>
+        </div>
+        <div class="form-control w-full max-w-xs">
+            <label for="url" class="label">URL</label>
+            <InputText id="url" class="input input-bordered w-full" @bind-Value="_paper.Url"/>
+            <ValidationMessage For="@(() => _paper.Url)"/>
+        </div>
+
+        <div class="form-control w-full max-w-xs">
+            <label for="name" class="label">Name</label>
+            <InputText id="name" class="input input-bordered w-full" @bind-Value="_paper.Name"/>
+            <ValidationMessage For="@(() => _paper.Name)"/>
+        </div>
+
+        <div class="form-control w-full max-w-xs">
+            <label for="email" class="label">E-mail Address</label>
+            <InputText id="email" class="input input-bordered w-full" @bind-Value="_paper.EmailAddress"/>
+            <ValidationMessage For="@(() => _paper.EmailAddress)"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+</div>
+
+@code {
+    private PaperSubmissionModel _paper = new();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await Orchestrator.SubmitPaperAsync(_paper.Title, _paper.Url, _paper.Name, _paper.EmailAddress);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            // Handle error (e.g., show error message to the user)
+        }
+    }
+
+    private class PaperSubmissionModel
+    {
+        [Required] public string Title { get; set; } = string.Empty;
+
+        [Required] [Url] public string Url { get; set; } = string.Empty;
+
+        [Required] public string Name { get; set; } = string.Empty;
+
+        [Required] [EmailAddress] public string EmailAddress { get; set; } = string.Empty;
+    }
+
+}
