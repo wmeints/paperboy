@@ -1,0 +1,24 @@
+[project]
+name = "paperboy"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Willem Meints", email = "1550763+wmeints@users.noreply.github.com" }
+]
+dependencies = [
+    "semantic-kernel>=1.10.1",
+    "django>=5.1.1",
+    "django-dotenv>=1.4.2",
+    "whitenoise>=6.7.0",
+    "psycopg-binary>=3.2.3",
+    "psycopg>=3.2.3",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[tool.rye]
+managed = true
+virtual = true
+dev-dependencies = [
+    "ruff>=0.6.8",
+]
