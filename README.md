@@ -1,3 +1,4 @@
-# paperboy
+# Paperboy - Paper of the week application
 
-Describe your project here.
+This application collects scientific papers and turns them into interesting articles for
+the Global AI Community newsletter.
