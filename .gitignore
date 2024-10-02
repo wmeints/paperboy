@@ -13,3 +13,7 @@ wheels/
 
 node_modules/
 static/css/app.css
+
+# local development
+
+.env
