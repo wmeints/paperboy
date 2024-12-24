@@ -1,3 +1,18 @@
+/**
+ * Configuration for the NextAuth authentication system.
+ * This module is separated from the main auth module to work around limitations
+ * with the edge runtime as described in the Auth.js v5 migration guide.
+ * @see https://authjs.dev/getting-started/migrating-to-v5#edge-compatibility
+ *
+ * @remarks
+ * The configuration includes:
+ * - GitHub authentication provider setup
+ * - Sign-in callback that restricts access to a specific GitHub user
+ * - Authorization callback that protects the editor routes
+ *
+ * @returns {NextAuthConfig} The NextAuth configuration object
+ */
+
 import Github from "next-auth/providers/github";
 import { NextAuthConfig } from "next-auth";
 
