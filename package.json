@@ -8,7 +8,9 @@
         "start": "next start",
         "lint": "eslint .",
         "prettier": "prettier --write .",
-        "db:generate": "drizzle-kit generate"
+        "db:generate": "drizzle-kit generate",
+        "db:push": "drizzle-kit push",
+        "db:migrate": "drizzle-kit migrate"
     },
     "dependencies": {
         "dotenv": "^16.4.7",
