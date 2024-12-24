@@ -7,7 +7,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
-export const categoriesTable = table("categories", {
+export const categories = table("categories", {
     id: serial().primaryKey(),
     name: varchar({ length: 100 }).notNull(),
     description: text().notNull(),

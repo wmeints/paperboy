@@ -1,5 +1,4 @@
 import {
-    date,
     serial,
     pgTable as table,
     text,
@@ -7,9 +6,13 @@ import {
     varchar,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { users } from "./users";
 
-export const postsTable = table("posts", {
+export const posts = table("posts", {
     id: serial(),
+    authorId: text()
+        .notNull()
+        .references(() => users.id, { onDelete: "restrict" }),
     title: varchar({ length: 500 }).notNull(),
     markdown: text(),
     html: text(),
